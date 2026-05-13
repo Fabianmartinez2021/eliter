@@ -78,7 +78,6 @@ export const routeCollapseMap = {
     '/register-sale': 13,
     '/register-wholesale': 13,
     '/credit-payment': 13,
-    '/historial-cupones': 13,
     '/pending-payments': 13,
 
     // Ventas especiales y vales (misma sección que ventas estándar)

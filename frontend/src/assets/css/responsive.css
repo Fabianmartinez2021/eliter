@@ -134,14 +134,25 @@ body {
     }
 }
 
-/* --- Modales en móvil --- */
-@media (max-width: 767px) {
-    /* Reactstrap: cada Modal se renderiza en un <div> hijo directo de <body> con tabindex="-1"
-       y z-index inline 1050. Cabecera / dropdowns (p. ej. notificaciones ~10500) o capas locales
-       pueden quedar por encima; subimos el portal del modal por encima de la UI principal. */
-    body.modal-open > div[tabindex="-1"] {
-        z-index: 15000 !important;
-    }
+/* --- Modales (Reactstrap): portal en <body> con tabindex="-1" e inline z-index 1050 --- */
+/* Sin refuerzo, cabecera / dropdowns (~10500) o la propia página pueden pintar encima del modal
+   (catálogo, ventas en espera, etc.). Forzamos: #root debajo; host del portal y .modal por encima. */
+body.modal-open #root {
+    position: relative;
+    z-index: 0 !important;
+}
+
+body.modal-open > div[tabindex="-1"] {
+    z-index: 20000 !important;
+}
+
+/* Bootstrap: backdrop y diálogo (position: fixed) deben ganar a cualquier botón de la vista */
+body.modal-open .modal-backdrop {
+    z-index: 20050 !important;
+}
+
+body.modal-open .modal {
+    z-index: 20051 !important;
 }
 
 @media (max-width: 575px) {

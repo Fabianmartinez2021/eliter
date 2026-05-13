@@ -272,16 +272,6 @@ function SideBar() {
 									roles={[1,3,4,7]}
 									userRole={user.role}
 								/>
-								{SHOW_COUPONS_AND_PROMOTIONS_MODULE && (
-								<MenuItem
-									to="/historial-cupones"
-									icon={receiptIcon}
-									text="Historial de cupones"
-									darkMode={darkMode}
-									roles={[1,3,4,7,10]}
-									userRole={user.role}
-								/>
-								)}
 								{SHOW_SPECIAL_SALES_MODULE && (
 								<>
 								<MenuSubGroupHeading label="Ventas especiales" darkMode={darkMode} />

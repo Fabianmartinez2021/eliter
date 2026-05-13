@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 // reactstrap components
 import {
-  Collapse,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -48,7 +47,6 @@ function AdminNavbar() {
   const { todayNotifications, unreadCount, markNotificationRead, markTicketNotificationsRead, dismissNotification, dismissAllNotifications } = useNotification();
   const history = useHistory();
   const [navbarColor] = React.useState("");
-  const [collapseOpen, setCollapseOpen] = React.useState(false);
   const [bellAnimating, setBellAnimating] = React.useState(false);
   const [removingIds, setRemovingIds] = React.useState(new Set());
   const [dismissingAll, setDismissingAll] = React.useState(false);
@@ -99,15 +97,6 @@ function AdminNavbar() {
 
   return (
     <>
-      {collapseOpen ? (
-        <div
-          id="bodyClick"
-          onClick={() => {
-            document.documentElement.classList.toggle("nav-open");
-            setCollapseOpen(false);
-          }}
-        />
-      ) : null}
       <Navbar
         className={`flex-column flex-md-row bd-navbar headerAdmin${
           darkMode ? " headerAdmin--deep" : ""
@@ -128,7 +117,6 @@ function AdminNavbar() {
                 wrapper.classList.toggle("toggled");
                 document.body.classList.toggle("sidebar-open-mobile", window.innerWidth < 768 && wrapper.classList.contains("toggled"));
               }
-              setCollapseOpen(false);
             }}
           >
             <Icon icon={indentIcon} width="20" height="20" style={{ color: headerIconColor }} />
@@ -227,6 +215,26 @@ function AdminNavbar() {
                 </div>
               </DropdownMenu>
             </UncontrolledDropdown>
+            <div
+              className="headerAdmin-themeToggle d-flex align-items-center mx-1"
+              onClick={toggleDarkMode}
+              style={{ cursor: "pointer" }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  toggleDarkMode();
+                }
+              }}
+              aria-label={darkMode ? "Modo claro" : "Modo oscuro"}
+            >
+              {darkMode ? (
+                <Icon icon={sunIcon} width="20" height="20" style={{ color: headerIconColor }} />
+              ) : (
+                <Icon icon={moonIcon} width="20" height="20" style={{ color: headerIconColor }} />
+              )}
+            </div>
             <UncontrolledDropdown nav inNavbar className="ml-1">
               <DropdownToggle
                 aria-haspopup={true}
@@ -255,24 +263,9 @@ function AdminNavbar() {
             </UncontrolledDropdown>
           </div>
 
-          <button
-            className="navbar-toggler headerAdmin-toggler"
-            onClick={() => {
-              document.documentElement.classList.toggle("nav-open");
-              setCollapseOpen(!collapseOpen);
-            }}
-            aria-expanded={collapseOpen}
-            type="button"
-          >
-            <span className="navbar-toggler-bar top-bar"></span>
-            <span className="navbar-toggler-bar middle-bar"></span>
-            <span className="navbar-toggler-bar bottom-bar"></span>
-          </button>
-        </div>
-
-        <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
+          <div className="d-none d-lg-flex align-items-center flex-shrink-0 ml-auto">
           <Nav navbar className="d-flex align-items-center">
-            <UncontrolledDropdown nav inNavbar className="mr-2 d-none d-lg-block">
+            <UncontrolledDropdown nav inNavbar className="mr-2">
               <DropdownToggle
                 aria-haspopup={true}
                 caret={false}
@@ -348,14 +341,14 @@ function AdminNavbar() {
                 </div>
               </DropdownMenu>
             </UncontrolledDropdown>
-            <div className="d-none d-lg-block headerAdmin-themeToggle" onClick={toggleDarkMode} style={{ cursor: "pointer" }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDarkMode(); } }} aria-label={darkMode ? "Modo claro" : "Modo oscuro"}>
+            <div className="headerAdmin-themeToggle" onClick={toggleDarkMode} style={{ cursor: "pointer" }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDarkMode(); } }} aria-label={darkMode ? "Modo claro" : "Modo oscuro"}>
               {darkMode ? (
                 <Icon icon={sunIcon} width="20" height="20" style={{ color: headerIconColor }} />
               ) : (
                 <Icon icon={moonIcon} width="20" height="20" style={{ color: headerIconColor }} />
               )}
             </div>
-            <UncontrolledDropdown nav className="d-none d-lg-block">
+            <UncontrolledDropdown nav>
               <DropdownToggle
                 aria-haspopup={true}
                 caret
@@ -383,7 +376,8 @@ function AdminNavbar() {
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
-        </Collapse>
+          </div>
+        </div>
       </Navbar>
     </>
   );
