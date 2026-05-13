@@ -85,7 +85,7 @@ function LoginPage() {
               <span className="login-split-version">v{packageJson.version}</span>
               <span className="login-split-copyright">© {new Date().getFullYear()} Eliter</span>
               <span className="login-split-supported">Soportado por Eliter</span>
-              <span className="login-split-supported">última actualización: 17/03/2026 12:33 p.m.</span>
+              <span className="login-split-supported">última actualización: 13/05/2026 02:33 p.m.</span>
             </div>
           </div>
         </div>
