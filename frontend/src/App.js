@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Button } from 'reactstrap';
 
 import { history, Role } from './helpers';
+import { SHOW_SPECIAL_SALES_MODULE, SHOW_COUPONS_AND_PROMOTIONS_MODULE } from './config/config';
 import { alertActions } from './actions';
 import { NotificationProvider } from './helpers/internalNotification';
 import AppNotifications from './components/Notifications/AppNotifications';
@@ -321,6 +322,8 @@ function App() {
                 <PrivateRoute path="/sales-notes" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales]} component={SalesNotesListPage} />
                 <PrivateRoute path="/sales-updated" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales]} component={SalesUpdatedPage} />
 
+                {SHOW_SPECIAL_SALES_MODULE ? (
+                <>
                 {/* Inventario Fiscal */}
                 <PrivateRoute path="/register-inventory-special" roles={[Role.Admin, Role.AuditorFinanciero, Role.Supervisor]} component={InventoryFiscalCreatePage} />
                 <PrivateRoute path="/update-inventory-special" roles={[Role.Admin, Role.AuditorFinanciero, Role.Supervisor]} component={InventoryFiscalUpdate} />
@@ -333,6 +336,41 @@ function App() {
                 <PrivateRoute path="/payment-special-methods-history" roles={[Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Supervisor, Role.Telesales, Role.AuditorFinanciero, Role.Supervisor, Role.AuditorGeneral]} component={PaymentFiscalMethodsHistory} />
                 <PrivateRoute path="/purchase-and-sales-history" roles={[Role.Admin, Role.Supervisor, Role.AuditorFinanciero, Role.AuditorGeneral]} component={PurchaseAndSalesHistory} />
                 <PrivateRoute path="/inventory-special-sell" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Auditor, Role.Collector, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={InventorySellPage} />
+                <PrivateRoute path="/pending-payments-special" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero, Role.AuditorGeneral]} component={PendingPaymentsFiscalPage} />
+                {/* Ventas Fiscales */}
+                <PrivateRoute path="/sales-special" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={SalesFiscalListManagerPage} />
+                <PrivateRoute path="/register-sale-special" roles={[Role.Admin, Role.Cashier, Role.Manager, Role.Telesales]} component={SalesFiscalCreatePage} />
+                <PrivateRoute path="/register-wholesale-special" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={WholesaleFiscalCreatePage} />
+                <PrivateRoute path="/offline-sales-special" roles={[Role.Admin, Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={SalesFiscalCreateOfflinePage} />
+                <PrivateRoute path="/credit-special-payment" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={CreditFiscalPaymentPage} />
+                {/* Reporte fiscal (ventas especiales) */}
+                <PrivateRoute path="/monthly-report" roles={[Role.Admin, Role.AuditorFinanciero]} component={ReportFiscalPage} />
+                </>
+                ) : (
+                <Route
+                    exact
+                    path={[
+                        '/register-inventory-special',
+                        '/update-inventory-special',
+                        '/readjustment-special',
+                        '/tickets-list-special',
+                        '/inventory-special-sell',
+                        '/inventory-history-special',
+                        '/kpis-monitoreo-especial',
+                        '/payment-special-methods-report',
+                        '/payment-special-methods-history',
+                        '/purchase-and-sales-history',
+                        '/pending-payments-special',
+                        '/sales-special',
+                        '/register-sale-special',
+                        '/register-wholesale-special',
+                        '/offline-sales-special',
+                        '/credit-special-payment',
+                        '/monthly-report',
+                    ]}
+                    render={() => <Redirect to="/home" />}
+                />
+                )}
 
 
                 {/* Suministros */}
@@ -367,7 +405,21 @@ function App() {
                 <PrivateRoute path="/register-sale" roles={[Role.Admin, Role.Cashier, Role.Manager, Role.Telesales]} component={SalesCreatePage} />
                 <PrivateRoute path="/sales-user" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={SalesListUserPage} />
                 <PrivateRoute path="/sales-combos-chart" roles={[Role.Admin, Role.Manager, Role.Telesales, Role.AuditorGeneral]} component={SalesCombosChartPage} />
+                {SHOW_COUPONS_AND_PROMOTIONS_MODULE ? (
+                <>
                 <PrivateRoute path="/historial-cupones" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Cashier, Role.Telesales, Role.AuditorGeneral]} component={CouponHistoryPage} />
+                <PrivateRoute path="/offer" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={OfferListPage} />
+                <PrivateRoute path="/create-offer" roles={[Role.Admin]} component={OfferCreatePage} />
+                <PrivateRoute path="/offer-history" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Telesales, Role.AuditorGeneral]} component={OfferReportPage} />
+                <PrivateRoute path="/inventory-offer" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Telesales, Role.AuditorGeneral]} component={InventoryOfferPage} />
+                </>
+                ) : (
+                <Route
+                    exact
+                    path={['/historial-cupones', '/offer', '/create-offer', '/offer-history', '/inventory-offer']}
+                    render={() => <Redirect to="/home" />}
+                />
+                )}
 
                 {/* Ventas al mayor */}
                 <PrivateRoute path="/register-wholesale" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={WholesaleCreatePage} />
@@ -375,16 +427,6 @@ function App() {
                 <PrivateRoute path="/pending-payments" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero, Role.AuditorGeneral]} component={PendingPaymentsPage} />
                 <PrivateRoute path="/accounts-payable" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero, Role.AuditorGeneral]} component={AccountsPayableListPage} />
                 <PrivateRoute path="/register-accounts-payable" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Auditor, Role.Telesales]} component={AccountsPayableCreatePage} />
-                <PrivateRoute path="/pending-payments-special" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero, Role.AuditorGeneral]} component={PendingPaymentsFiscalPage} />
-
-
-                {/* Ventas Fiscales */}
-                <PrivateRoute path="/sales-special" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={SalesFiscalListManagerPage} />
-
-                <PrivateRoute path="/register-sale-special" roles={[Role.Admin, Role.Cashier, Role.Manager, Role.Telesales]} component={SalesFiscalCreatePage} />
-                <PrivateRoute path="/register-wholesale-special" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={WholesaleFiscalCreatePage} />
-                <PrivateRoute path="/offline-sales-special" roles={[Role.Admin, Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={SalesFiscalCreateOfflinePage} />
-                <PrivateRoute path="/credit-special-payment" roles={[Role.Cashier, Role.Admin, Role.Manager, Role.Telesales]} component={CreditFiscalPaymentPage} />
 
                 {/* Televentas */}
                 <PrivateRoute path="/telesales" roles={[Role.Admin, Role.Supervisor, Role.Telesales]} component={TelesalesListPage} />
@@ -407,10 +449,6 @@ function App() {
 
                 {/* Salidas por degustación, autoconsumo o donación */}
                 <PrivateRoute path="/departure" roles={[Role.Admin, Role.Manager, Role.Telesales]} component={DeparturePage} />
-
-                {/* Ofertas */}
-                <PrivateRoute path="/offer" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={OfferListPage} />
-                <PrivateRoute path="/create-offer" roles={[Role.Admin]} component={OfferCreatePage} />
 
                 {/* Caja */}
                 <PrivateRoute path="/box-opening" roles={[Role.Admin]} component={BoxCreatePage} />
@@ -449,19 +487,13 @@ function App() {
                 <PrivateRoute path="/departures" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Auditor, Role.Collector, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={DepartureListPage} />
                 <PrivateRoute path="/inventory-report-plus" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Telesales]} component={InventoryReportPlusPage} />
                 <PrivateRoute path="/inventory-adjustment-history" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Auditor, Role.Telesales, Role.AuditorFinanciero]} component={InventoryAdjustmentHistoryPage} />
-                <PrivateRoute path="/offer-history" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Telesales, Role.AuditorGeneral]} component={OfferReportPage} />
                 <PrivateRoute path="/cron-history" roles={[Role.Admin, Role.Supervisor, Role.Telesales]} component={CronHistoryPage} />
-                <PrivateRoute path="/inventory-offer" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Telesales, Role.AuditorGeneral]} component={InventoryOfferPage} />
                 <PrivateRoute path="/box-report" roles={[Role.Admin, Role.Collector, Role.Auditor, Role.Supervisor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={BoxReportPage} />
                 <PrivateRoute path="/box-close-report" roles={[Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Supervisor, Role.Telesales, Role.AuditorFinanciero, Role.AuditorGeneral]} component={BoxCloseReportPage} />
                 <PrivateRoute path="/client-list" roles={[Role.Admin, Role.Manager, Role.Cashier, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero]} component={ClientListPage} />
                 <PrivateRoute path="/wholesale-client-list" roles={[Role.Admin, Role.Manager, Role.Collector, Role.Auditor, Role.Telesales, Role.Supervisor, Role.AuditorFinanciero]} component={WholesaleClientListPage} />
                 <PrivateRoute path="/operators-performance" roles={[Role.Admin, Role.Manager, Role.Auditor, Role.Supervisor, Role.AuditorFinanciero]} component={OperatorsPerformancePage} />
                 <PrivateRoute path="/cashiers-performance" roles={[Role.Admin, Role.Manager, Role.Auditor, Role.Supervisor, Role.AuditorFinanciero]} component={CashiersPerformancePage} />
-
-                {/* Reporte fiscal */}
-                <PrivateRoute path="/monthly-report" roles={[Role.Admin, Role.AuditorFinanciero]} component={ReportFiscalPage} />
-
 
                 {/* Activos */}
                 <PrivateRoute path="/assets" roles={[Role.Admin, Role.Supervisor, Role.Manager, Role.Auditor, Role.Telesales, Role.AuditorFinanciero]} component={AssetsListPage} />

@@ -17,6 +17,7 @@ import '../../assets/css/options.css';
 import useDebounce from '../../components/Debounce';
 import moment from 'moment';
 import { WeightProduct } from '../../helpers/weight'
+import { getCatalogUnitPriceBsUsd } from '../../helpers/catalogPriceDisplay';
 // import { currencyDollarActions } from '../../actions/currencyDollar.actions';
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css"; // Importa los estilos
@@ -2106,28 +2107,47 @@ function valesCreatePage() {
                         <tr>
                           <th>Código</th>
                           <th>Producto</th>
+                          <th className="text-nowrap">Bs</th>
+                          <th className="text-nowrap">$</th>
                           <th style={{ width: 120 }} />
                         </tr>
                       </thead>
                       <tbody>
                         {catalogRowsFiltered.length === 0 ? (
                           <tr>
-                            <td colSpan={3} className="text-center py-3">
+                            <td colSpan={5} className="text-center py-3">
                               {listProducts && listProducts.length ? 'Sin coincidencias' : 'Cargando catálogo…'}
                             </td>
                           </tr>
                         ) : (
-                          catalogRowsFiltered.map((p, idx) => (
+                          catalogRowsFiltered.map((p, idx) => {
+                            const { bs, usd } = getCatalogUnitPriceBsUsd(p, valueDollar, offerProducts);
+                            return (
                             <tr key={p._id || p.id || `${String(p.code)}-${idx}`}>
                               <td className="text-nowrap">{p.code}</td>
                               <td>{p.name}</td>
+                              <td className="text-nowrap">
+                                {bs != null ? (
+                                  <NumberFormat value={bs.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'Bs '} />
+                                ) : (
+                                  <span className="text-muted">—</span>
+                                )}
+                              </td>
+                              <td className="text-nowrap">
+                                {usd != null ? (
+                                  <NumberFormat value={usd.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$ '} />
+                                ) : (
+                                  <span className="text-muted">—</span>
+                                )}
+                              </td>
                               <td>
                                 <Button color="primary" size="sm" type="button" onClick={() => selectProductFromCatalog(p)}>
                                   Seleccionar
                                 </Button>
                               </td>
                             </tr>
-                          ))
+                            );
+                          })
                         )}
                       </tbody>
                     </Table>

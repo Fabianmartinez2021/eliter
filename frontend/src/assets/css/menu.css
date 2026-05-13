@@ -328,7 +328,10 @@ body {
 
 }
 
-#menu-toggle, .navbar-toggler, #wrapper .btn {
+/* Solo controles de navegación/menú: NO aplicar a #wrapper .btn (afecta todos los botones
+   de formularios y queda por encima de modales Bootstrap, p. ej. catálogo en móvil). */
+#menu-toggle,
+#wrapper .navbar-toggler {
     position: relative;
     z-index: 9999 !important;
     display: block !important;

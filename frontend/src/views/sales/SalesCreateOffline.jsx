@@ -18,6 +18,8 @@ import moment from 'moment';
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css"; // Importa los estilos
 import Swal from 'sweetalert2';
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
+import { getCatalogUnitPriceBsUsd } from '../../helpers/catalogPriceDisplay';
 
 function SalesCreateOfflinePage() {
 
@@ -188,6 +190,11 @@ function SalesCreateOfflinePage() {
         });
     }, [listProducts, catalogFilterText, catalogType, catalogCombos]);
 
+    const catalogDollarRate =
+        listCoin && listCoin.length > 0 && listCoin[0].value != null
+            ? Number(listCoin[0].value)
+            : 0;
+
     // Cupón deshabilitado en ventas offline (no se puede validar sin conexión)
 
     //Añadir producto a tabla
@@ -203,7 +210,7 @@ function SalesCreateOfflinePage() {
 
             //Obtener ofertas si existen
             var offer = null;
-            if (offerProducts && offerProducts.length > 0) {
+            if (SHOW_COUPONS_AND_PROMOTIONS_MODULE && offerProducts && offerProducts.length > 0) {
                 offer = offerProducts.find(item => {
                     return String(item.product.code ?? '').trim() === codeInput;
                 })
@@ -1356,28 +1363,47 @@ function SalesCreateOfflinePage() {
                                                 <tr>
                                                     <th>Código</th>
                                                     <th>Producto</th>
+                                                    <th className="text-nowrap">Bs</th>
+                                                    <th className="text-nowrap">$</th>
                                                     <th style={{ width: 120 }} />
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {catalogRowsFiltered.length === 0 ? (
                                                     <tr>
-                                                        <td colSpan={3} className="text-center py-3">
+                                                        <td colSpan={5} className="text-center py-3">
                                                             {listProducts && listProducts.length ? 'Sin coincidencias' : 'Sin catálogo (sincronice datos offline)…'}
                                                         </td>
                                                     </tr>
                                                 ) : (
-                                                    catalogRowsFiltered.map((p, idx) => (
+                                                    catalogRowsFiltered.map((p, idx) => {
+                                                        const { bs, usd } = getCatalogUnitPriceBsUsd(p, catalogDollarRate, offerProducts);
+                                                        return (
                                                         <tr key={p._id || p.id || `${String(p.code)}-${idx}`}>
                                                             <td className="text-nowrap">{p.code}</td>
                                                             <td>{p.name}</td>
+                                                            <td className="text-nowrap">
+                                                                {bs != null ? (
+                                                                    <NumberFormat value={bs.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'Bs '} />
+                                                                ) : (
+                                                                    <span className="text-muted">—</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="text-nowrap">
+                                                                {usd != null ? (
+                                                                    <NumberFormat value={usd.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$ '} />
+                                                                ) : (
+                                                                    <span className="text-muted">—</span>
+                                                                )}
+                                                            </td>
                                                             <td>
                                                                 <Button color="primary" size="sm" type="button" onClick={() => selectProductFromCatalog(p)}>
                                                                     Seleccionar
                                                                 </Button>
                                                             </td>
                                                         </tr>
-                                                    ))
+                                                        );
+                                                    })
                                                 )}
                                             </tbody>
                                         </Table>

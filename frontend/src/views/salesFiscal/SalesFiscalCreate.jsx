@@ -24,6 +24,7 @@ import { WeightProduct } from '../../helpers/weight'
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css";
 import "../../assets/css/coupon.css";
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
 
 //Componente filtro
 const FilterComponent = ({ filterText, onFilter, onClear }) => {
@@ -131,9 +132,9 @@ function SalesFiscalCreatePage() {
     const [couponError, setCouponError] = useState('');
     const [validatingCoupon, setValidatingCoupon] = useState(false);
     const [couponAmounts, setCouponAmounts] = useState(null);
-    const effectiveTotal = useMemo(() => couponValid && total > 0 ? Math.round(total * 0.95 * 100) / 100 : total, [total, couponValid]);
+    const effectiveTotal = useMemo(() => SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid && total > 0 ? Math.round(total * 0.95 * 100) / 100 : total, [total, couponValid]);
     const totalInDollars = useMemo(() => (listCoin && listCoin[0]?.value) ? total / (listCoin[0].value || 1) : 0, [total, listCoin]);
-    const canUseCoupon = total > 0 && totalInDollars >= 10;
+    const canUseCoupon = SHOW_COUPONS_AND_PROMOTIONS_MODULE && total > 0 && totalInDollars >= 10;
 
     //Añadir producto a tabla
     const onCreateData = (data, e) => {
@@ -149,7 +150,7 @@ function SalesFiscalCreatePage() {
 
             //Obtener ofertas si existen
             var offer = null;
-            if (offerProducts.length > 0) {
+            if (SHOW_COUPONS_AND_PROMOTIONS_MODULE && offerProducts && offerProducts.length > 0) {
                 offer = offerProducts.find(item => {
                     return item.product.code === data.code
                 })
@@ -210,7 +211,7 @@ function SalesFiscalCreatePage() {
                 }
                 setTotalWeight(sumWeight);
                 //setear por defecto el total en punto (con descuento cupón si aplica)
-                setValue('pAmmount', (couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
+                setValue('pAmmount', (SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
             })
             //focus en el codigo nuevamente
             // codeRef.current.focus();
@@ -253,7 +254,7 @@ function SalesFiscalCreatePage() {
         data.total = total;
         // Para metas/objetivos debe trabajarse en dólares (sin multiplicar por la tasa).
         data.totalDollar = parseFloat((listCoin?.[0]?.value ? total / listCoin[0].value : 0).toFixed(2));
-        data.couponCode = couponValid ? couponCodeInput.trim() : '';
+        data.couponCode = SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? couponCodeInput.trim() : '';
         data.totalWeight = totalWeight;//total peso
         data.phone = (data.phone != null && String(data.phone).trim() !== '') ? String(data.phone).trim() : '';
         // Usar tasa del ticket si existe (creado tras cierre); si no, tasa actual
@@ -349,7 +350,7 @@ function SalesFiscalCreatePage() {
             setTotalWeight(sumWeight);
 
             //setear por defecto el total en punto (con descuento cupón si aplica)
-            setValue('pAmmount', (couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
+            setValue('pAmmount', (SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
         })
 
         if (preSale.length == 0) {
@@ -399,6 +400,7 @@ function SalesFiscalCreatePage() {
     }
 
     const handleValidateCoupon = async () => {
+        if (!SHOW_COUPONS_AND_PROMOTIONS_MODULE) return;
         const code = couponCodeInput ? String(couponCodeInput).trim() : '';
         if (!code) { setCouponError('Ingrese el código del cupón'); setCouponValid(false); setCouponAmounts(null); return; }
         if (totalInDollars < 10) { setCouponError('El cupón está disponible solo en compras de $10 o más'); setCouponValid(false); setCouponAmounts(null); return; }
@@ -532,7 +534,7 @@ function SalesFiscalCreatePage() {
     const [totalVes, setTotalVes] = useState(0);
 
     // Totales en cada moneda (cambian con cupón: con descuento = effectiveTotal, sin = total)
-    const amountForPayment = couponValid ? effectiveTotal : total;
+    const amountForPayment = SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? effectiveTotal : total;
     useEffect(() => {
         if (amountForPayment > 0 && listCoin && listCoin.length > 0) {
             setTotalDollar(amountForPayment / listCoin[0].value);
@@ -1455,7 +1457,7 @@ function SalesFiscalCreatePage() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {couponValid && total > 0 && listCoin && listCoin.length >= 3 && (
+                                            {SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid && total > 0 && listCoin && listCoin.length >= 3 && (
                                                 <div className="coupon-discount-preview ml-2">
                                                     <div className="before">
                                                         Sin descuento: $ <NumberFormat value={(total / (listCoin[0]?.value || 1)).toFixed(2)} displayType="text" thousandSeparator={true} />

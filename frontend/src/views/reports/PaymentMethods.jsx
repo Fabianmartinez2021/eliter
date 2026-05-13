@@ -28,6 +28,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css";
 import { usdFromRow, formatUsd } from '../../helpers/paymentMethodsUsdDisplay';
+import { SHOW_SPECIAL_SALES_MODULE, SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
 
 // Tabla de resumen de caja desplegable (fuera del componente para conservar estado al colapsar)
 function SummaryTableCollapsible({ data, darkMode }) {
@@ -353,7 +354,7 @@ function PaymentMethodsPage() {
 					) : null}
 				</div>
 
-				{/* Descuentos por cupón */}
+				{SHOW_COUPONS_AND_PROMOTIONS_MODULE && (
 				<div className="payment-method-card">
 					<span className="payment-method-label">Descuentos por cupón (equiv. USD):</span>
 					<span className="payment-method-value">
@@ -368,6 +369,7 @@ function PaymentMethodsPage() {
 						</button>
 					) : null}
 				</div>
+				)}
 
 				{/* Saldo final por créditos */}
 				<div className="payment-method-card">
@@ -685,7 +687,7 @@ function PaymentMethodsPage() {
 		{
 			name: '',
 			selector: 'date',
-			omit: ((user.role == 4) || (user.role == 5) || (user.role == 8) || ((filters) && (filters.mixData))),
+			omit: (!SHOW_SPECIAL_SALES_MODULE || (user.role == 4) || (user.role == 5) || (user.role == 8) || ((filters) && (filters.mixData))),
 			cell: (row) => {
 				return <Button color="info" type="submit" disabled={loadingPage}   onClick={() => {
 					findTerminals(row);  // Ejecuta la función existente
@@ -1947,6 +1949,7 @@ function PaymentMethodsPage() {
 										</Col>
 									</Row>
 									<Row form>
+										{SHOW_COUPONS_AND_PROMOTIONS_MODULE && (
 										<Col md={4}>
 											<FormGroup>
 												<Label>
@@ -1959,6 +1962,7 @@ function PaymentMethodsPage() {
 												</Label>
 											</FormGroup>
 										</Col>
+										)}
 									</Row>
 									<Row>
 										<Col md={4}>

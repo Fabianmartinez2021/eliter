@@ -54,6 +54,7 @@ import trashIcon from '@iconify/icons-fa-solid/trash';
 import ticketAlt from '@iconify/icons-fa-solid/ticket-alt';
 import receiptIcon from '@iconify/icons-fa-solid/receipt';
 import { keyboardShortcuts } from './keyboardShortcuts';
+import { SHOW_SPECIAL_SALES_MODULE, SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
 import { getCollapseIdForRoute } from './routeCollapseMap';
 import MenuSection from './MenuSection';
 import MenuItem from './MenuItem';
@@ -271,6 +272,7 @@ function SideBar() {
 									roles={[1,3,4,7]}
 									userRole={user.role}
 								/>
+								{SHOW_COUPONS_AND_PROMOTIONS_MODULE && (
 								<MenuItem
 									to="/historial-cupones"
 									icon={receiptIcon}
@@ -279,6 +281,9 @@ function SideBar() {
 									roles={[1,3,4,7,10]}
 									userRole={user.role}
 								/>
+								)}
+								{SHOW_SPECIAL_SALES_MODULE && (
+								<>
 								<MenuSubGroupHeading label="Ventas especiales" darkMode={darkMode} />
 								<MenuItem
 									to="/credit-special-payment"
@@ -312,6 +317,8 @@ function SideBar() {
 									roles={[1,3,4]}
 									userRole={user.role}
 								/>
+								</>
+								)}
 								<MenuSubGroupHeading label="Vales" darkMode={darkMode} />
 								<MenuItem
 									to="/vale-payments"
@@ -776,6 +783,7 @@ function SideBar() {
 								   userRole={user.role}
 								/>
 							</MenuSection>
+							{SHOW_SPECIAL_SALES_MODULE && (
 							<MenuSection
 								collapseId={25}
 								title="Inventario especial"
@@ -867,6 +875,8 @@ function SideBar() {
 									userRole={user.role}
 								/>								 
 							</MenuSection>
+							)}
+							{SHOW_COUPONS_AND_PROMOTIONS_MODULE && (
 							<MenuSection
 								collapseId={10}
 								title="Ofertas"
@@ -894,6 +904,7 @@ function SideBar() {
 									userRole={user.role}
 								/>
 							</MenuSection>
+							)}
 							<MenuSection
 								collapseId={30}
 								title="Reportes"
@@ -1011,6 +1022,7 @@ function SideBar() {
 									roles={[1,2,3,10]}
 									userRole={user.role}
 								/>
+								{SHOW_SPECIAL_SALES_MODULE && (
 								<MenuItem
 									to="/pending-payments-special"
 									icon={bookMedical}
@@ -1019,6 +1031,7 @@ function SideBar() {
 									roles={[]}
 									userRole={user.role}
 								/>
+								)}
 								<MenuItem
 									to="/sales-combos-chart"
 									icon={chartLine}

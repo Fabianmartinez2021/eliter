@@ -30,6 +30,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css"; 
 import { useSyncFirstAgencyFormField } from '../../hooks/useSyncFirstAgency';
+import { SHOW_SPECIAL_SALES_MODULE } from '../../config/config';
 
 function PendingPaymentsFiscalPage() {
 
@@ -761,7 +762,7 @@ function PendingPaymentsFiscalPage() {
                             <div className="align-self-center">
                                 <h3 style={{ fontWeight:'bold',fontStyle: 'italic',  marginBottom: '0'}}>Cuentas especiales por cobrar</h3>
                             </div>
-                            { user.role !== 10 && (<Button id="add" onClick={()=>history.push('/credit-special-payment')} className="btn-round btn-icon" color="primary">
+                            {SHOW_SPECIAL_SALES_MODULE && user.role !== 10 && (<Button id="add" onClick={()=>history.push('/credit-special-payment')} className="btn-round btn-icon" color="primary">
                                 <i className="fa fa-plus" />
                             </Button>)}
                         </div>

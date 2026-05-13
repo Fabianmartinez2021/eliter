@@ -125,7 +125,7 @@ function TelesalesListPage() {
 				//	Si es un abono 
 				else if (row.isSumation)
 					return <>
-							<Badge color={"danger"} pill className="h6 p-2 mt-1">
+							<Badge color={"warning"} pill className="h6 p-2 mt-1">
 								{"ABONO"}
 							</Badge>
 						</>
@@ -139,7 +139,7 @@ function TelesalesListPage() {
 				//	Si es un pago al detal
 				else
 					return <>
-							<Badge color={"danger"} pill className="h6 p-2 mt-1">
+							<Badge color={"success"} pill className="h6 p-2 mt-1">
 								{"DETAL"}
 							</Badge>
 						</>
@@ -485,7 +485,7 @@ function TelesalesListPage() {
 										{"CRÉDITO"}
 									</Badge> : (
 										data.isSumation ? 
-											<Badge color={"danger"} pill className="h6 p-2 mt-1">
+											<Badge color={"warning"} pill className="h6 p-2 mt-1">
 												{"ABONO"}
 											</Badge> : (
 
@@ -494,7 +494,7 @@ function TelesalesListPage() {
 													{"MAYOR"}
 												</Badge> : 
 												
-												<Badge color={"danger"} pill className="h6 p-2 mt-1">
+												<Badge color={"success"} pill className="h6 p-2 mt-1">
 													{"DETAL"}
 												</Badge>
 											)

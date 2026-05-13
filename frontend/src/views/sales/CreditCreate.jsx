@@ -13,6 +13,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import '../../assets/css/table.css';
 import '../../assets/css/options.css';
 import { WeightProduct } from '../../helpers/weight'
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
 //Componente filtro
 import { Typeahead, withAsync } from 'react-bootstrap-typeahead';
 
@@ -100,7 +101,7 @@ function SalesCreatePage() {
 
             //Obtener ofertas si existen
             var offer = null;
-            if(offerProducts.length > 0){
+            if(SHOW_COUPONS_AND_PROMOTIONS_MODULE && offerProducts && offerProducts.length > 0){
                 offer = offerProducts.find(item => {
                     return item.product.code === data.code
                 })  

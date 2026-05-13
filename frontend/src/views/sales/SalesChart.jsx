@@ -238,7 +238,7 @@ function SalesChartPage() {
                 else if (row.isSumation && row.type === 3)
                     return (
                         <>
-                            <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                            <Badge color={"warning"} pill className="h6 p-2 mt-1">
                                 {"ABONO"}
                             </Badge>
                         </>
@@ -246,7 +246,7 @@ function SalesChartPage() {
                 else if (row.isSumation && row.type === 7)
                     return (
                         <>
-                            <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                            <Badge color={"warning"} pill className="h6 p-2 mt-1">
                                 {"ABONO F"}
                             </Badge>
                         </>
@@ -279,7 +279,7 @@ function SalesChartPage() {
                 else if (row.type === 12)
                     return (
                         <>
-                            <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                            <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                                 {"VALE PEND"}
                             </Badge>
                             &nbsp;
@@ -291,7 +291,7 @@ function SalesChartPage() {
                 else if (row.isWholesale && row.type === 10)
                     return (
                         <>
-                            <Badge color={"success"} pill className="h6 p-2 mt-1">
+                            <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                                 {"VALE PAG"}
                             </Badge>
                             &nbsp;
@@ -303,7 +303,7 @@ function SalesChartPage() {
                 else if (row.isWholesale && row.type === 11)
                     return (
                         <>
-                            <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                            <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                                 {"VALE ABO"}
                             </Badge>
                             &nbsp;
@@ -317,7 +317,7 @@ function SalesChartPage() {
                     if (row.type === 1) {
                         return (
                             <>
-                                <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                                <Badge color={"success"} pill className="h6 p-2 mt-1">
                                     {"DETAL"}
                                 </Badge>
                             </>
@@ -325,7 +325,7 @@ function SalesChartPage() {
                     } else if (row.type === 5) {
                         return (
                             <>
-                                <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                                <Badge color={"success"} pill className="h6 p-2 mt-1">
                                     {"DETAL F"}
                                 </Badge>
                             </>
@@ -333,7 +333,7 @@ function SalesChartPage() {
                     } else if (row.type === 9) {
                         return (
                             <>
-                                <Badge color={"success"} pill className="h6 p-2 mt-1">
+                                <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                                     {"VALE"}
                                 </Badge>
                             </>
@@ -885,7 +885,7 @@ function SalesChartPage() {
                                             {"CRÉDITO"}
                                         </Badge>
                                     ) : data.isSumation ? (
-                                        <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                                        <Badge color={"warning"} pill className="h6 p-2 mt-1">
                                             {"ABONO"}
                                         </Badge>
                                     ) : data.isWholesale ? (
@@ -893,7 +893,7 @@ function SalesChartPage() {
                                             {"MAYOR"}
                                         </Badge>
                                     ) : (
-                                        <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                                        <Badge color={"success"} pill className="h6 p-2 mt-1">
                                             {"DETAL"}
                                         </Badge>
                                     )}

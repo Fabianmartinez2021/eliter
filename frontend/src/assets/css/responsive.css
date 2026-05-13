@@ -43,8 +43,49 @@ body {
     #page-content-wrapper {
         min-height: 100vh;
         min-height: 100dvh;
-        padding-left: 0.75rem !important;
-        padding-right: 0.75rem !important;
+        /* Sin márgenes laterales: contenido a todo el ancho (respeta notch) */
+        padding-left: max(0px, env(safe-area-inset-left)) !important;
+        padding-right: max(0px, env(safe-area-inset-right)) !important;
+    }
+
+    /* Quitar padding horizontal de contenedores Bootstrap dentro del área principal */
+    #page-content-wrapper > .container-fluid,
+    #page-content-wrapper > .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-width: none !important;
+    }
+
+    #page-content-wrapper .container-fluid .container,
+    #page-content-wrapper .container-fluid > .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Con padding 0 en el contenedor, anular márgenes negativos del .row (evita scroll horizontal) */
+    #page-content-wrapper .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Ligero respiro en columnas Bootstrap (no afecta .collapse) */
+    #page-content-wrapper .row > [class*="col-"],
+    #page-content-wrapper .form-row > [class*="col-"],
+    #page-content-wrapper .row > .col {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* Páginas con envoltorio .p-3: sin padding horizontal en móvil (mantiene vertical) */
+    #page-content-wrapper > .flex-column.flex-md-row.p-3,
+    #page-content-wrapper > div.p-3 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: max(0px, env(safe-area-inset-left)) !important;
+        padding-right: max(0px, env(safe-area-inset-right)) !important;
     }
 }
 
@@ -94,6 +135,15 @@ body {
 }
 
 /* --- Modales en móvil --- */
+@media (max-width: 767px) {
+    /* Reactstrap: cada Modal se renderiza en un <div> hijo directo de <body> con tabindex="-1"
+       y z-index inline 1050. Cabecera / dropdowns (p. ej. notificaciones ~10500) o capas locales
+       pueden quedar por encima; subimos el portal del modal por encima de la UI principal. */
+    body.modal-open > div[tabindex="-1"] {
+        z-index: 15000 !important;
+    }
+}
+
 @media (max-width: 575px) {
     .modal-dialog {
         margin: 0.5rem;

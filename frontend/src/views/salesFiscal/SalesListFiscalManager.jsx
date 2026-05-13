@@ -227,7 +227,7 @@ function SalesListManagerPage() {
         else if (row.type === 7)
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"warning"} pill className="h6 p-2 mt-1">
                 {"ABONO F"}
               </Badge>
             </>
@@ -262,7 +262,7 @@ function SalesListManagerPage() {
           if (row.type === 1) {
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"success"} pill className="h6 p-2 mt-1">
                 {"DETAL"}
               </Badge>
             </>
@@ -270,7 +270,7 @@ function SalesListManagerPage() {
         } else if (row.type === 5) {
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"success"} pill className="h6 p-2 mt-1">
                 {"DETAL F"}
               </Badge>
             </>
@@ -924,7 +924,7 @@ function SalesListManagerPage() {
                       {"CRÉDITO F"}
                     </Badge>
                   ) : data.isSumation ? (
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                    <Badge color={"warning"} pill className="h6 p-2 mt-1">
                       {"ABONO F "}
                     </Badge>
                   ) : data.isWholesale ? (
@@ -932,7 +932,7 @@ function SalesListManagerPage() {
                       {"MAYOR F "}
                     </Badge>
                   ) : (
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                    <Badge color={"success"} pill className="h6 p-2 mt-1">
                       {"DETAL F"}
                     </Badge>
                   )}

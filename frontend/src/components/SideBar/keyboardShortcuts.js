@@ -1,22 +1,31 @@
-/**
- * Configuración de atajos de teclado para el SideBar
- * Mapea combinaciones Ctrl + tecla a rutas
- */
-export const keyboardShortcuts = {
-    'a': '/register-wholesale-special',
-    's': '/register-sale-special',
+import { SHOW_SPECIAL_SALES_MODULE } from '../../config/config';
+
+const coreShortcuts = {
     'q': '/credit-payment',
-    'l': '/credit-special-payment',
     'e': '/register-sale',
     'r': '/offline-sales',
-    'b': '/offline-sales-special',
     'u': '/pending-payments',
+};
+
+const specialSalesShortcuts = {
+    'a': '/register-wholesale-special',
+    's': '/register-sale-special',
+    'l': '/credit-special-payment',
+    'b': '/offline-sales-special',
     'i': '/register-inventory-special',
     'o': '/tickets-list-special',
     'p': '/readjustment-special',
     'h': '/inventory-history-special',
     'ñ': '/payment-special-methods-history'
 };
+
+/**
+ * Configuración de atajos de teclado para el SideBar
+ * Mapea combinaciones Ctrl + tecla a rutas
+ */
+export const keyboardShortcuts = SHOW_SPECIAL_SALES_MODULE
+    ? { ...coreShortcuts, ...specialSalesShortcuts }
+    : coreShortcuts;
 
 /**
  * Función helper para obtener el shortcut formateado

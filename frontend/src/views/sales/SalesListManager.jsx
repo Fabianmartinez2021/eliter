@@ -39,6 +39,7 @@ import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css";
 import { useSyncFirstAgencyFormField } from "../../hooks/useSyncFirstAgency";
 import { salesService } from "../../services";
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from "../../config/config";
 
 const companies = [
   "Principal",
@@ -261,6 +262,7 @@ function SalesListManagerPage() {
             <div>
               <NumberFormat
                 value={
+                  SHOW_COUPONS_AND_PROMOTIONS_MODULE &&
                   row.couponDiscount && row.couponDiscount > 0 && (row.type === 1 || row.type === 5)
                     ? row.couponDiscount.toFixed(2)
                     : ""
@@ -306,7 +308,7 @@ function SalesListManagerPage() {
         else if (row.isSumation && row.type === 3)
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"warning"} pill className="h6 p-2 mt-1">
                 {"ABONO"}
               </Badge>
             </>
@@ -314,7 +316,7 @@ function SalesListManagerPage() {
         else if (row.isSumation && row.type === 7)
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"warning"} pill className="h6 p-2 mt-1">
                 {"ABONO F"}
               </Badge>
             </>
@@ -347,7 +349,7 @@ function SalesListManagerPage() {
         else if (row.type === 12 || row.type === 13)
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                 {"VALE PEND"}
               </Badge>
               &nbsp;
@@ -359,7 +361,7 @@ function SalesListManagerPage() {
         else if (row.isWholesale && row.type === 10)
           return (
             <>
-              <Badge color={"success"} pill className="h6 p-2 mt-1">
+              <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                 {"VALE PAG"}
               </Badge>
               &nbsp;
@@ -371,7 +373,7 @@ function SalesListManagerPage() {
         else if (row.isWholesale && row.type === 11)
           return (
             <>
-              <Badge color={"danger"} pill className="h6 p-2 mt-1">
+              <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                 {"VALE ABO"}
               </Badge>
               &nbsp;
@@ -385,13 +387,13 @@ function SalesListManagerPage() {
           if (row.type === 1) {
             return (
               <>
-                <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                <Badge color={"success"} pill className="h6 p-2 mt-1">
                   {"DETAL"}
                 </Badge>
-                {row.couponCode && (
+                {SHOW_COUPONS_AND_PROMOTIONS_MODULE && row.couponCode && (
                   <>
                     &nbsp;
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1 badge-cupon-outline">
+                    <Badge color={"success"} pill className="h6 p-2 mt-1 badge-cupon-outline">
                       Cupón
                     </Badge>
                   </>
@@ -401,13 +403,13 @@ function SalesListManagerPage() {
           } else if (row.type === 5) {
             return (
               <>
-                <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                <Badge color={"success"} pill className="h6 p-2 mt-1">
                   {"DETAL F"}
                 </Badge>
-                {row.couponCode && (
+                {SHOW_COUPONS_AND_PROMOTIONS_MODULE && row.couponCode && (
                   <>
                     &nbsp;
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1 badge-cupon-outline">
+                    <Badge color={"success"} pill className="h6 p-2 mt-1 badge-cupon-outline">
                       Cupón
                     </Badge>
                   </>
@@ -417,7 +419,7 @@ function SalesListManagerPage() {
           } else if (row.type === 9) {
             return (
               <>
-                <Badge color={"success"} pill className="h6 p-2 mt-1">
+                <Badge color={"secondary"} pill className="h6 p-2 mt-1 badge-vale-rosa">
                   {"VALE"}
                 </Badge>
               </>
@@ -776,7 +778,7 @@ function SalesListManagerPage() {
         sumtotalDollar = dataSales.total[0].totalAmountDollar;
         sumWholesaleDifferential = dataSales.total[0].wholesaleDifferential;
         sumDiscountDifferential = dataSales.total[0].discountDifferential;
-        sumCouponDifferential = (dataSales.total[0].couponDifferential != null) ? dataSales.total[0].couponDifferential : 0;
+        sumCouponDifferential = SHOW_COUPONS_AND_PROMOTIONS_MODULE && (dataSales.total[0].couponDifferential != null) ? dataSales.total[0].couponDifferential : 0;
         sumTotalAmountDifferential = dataSales.total[0].totalAmountDifferential;
         sumTotalAmmountDeliverys = dataSales.total[0].totalAmmountDeliverys;
       }
@@ -1181,7 +1183,7 @@ function SalesListManagerPage() {
                       {"CRÉDITO"}
                     </Badge>
                   ) : data.isSumation ? (
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                    <Badge color={"warning"} pill className="h6 p-2 mt-1">
                       {"ABONO"}
                     </Badge>
                   ) : data.isWholesale ? (
@@ -1189,7 +1191,7 @@ function SalesListManagerPage() {
                       {"MAYOR"}
                     </Badge>
                   ) : (
-                    <Badge color={"danger"} pill className="h6 p-2 mt-1">
+                    <Badge color={"success"} pill className="h6 p-2 mt-1">
                       {"DETAL"}
                     </Badge>
                   )}
@@ -2145,14 +2147,18 @@ function SalesListManagerPage() {
                   onChangePage={handlePageChange}
                   persistTableHead
                   theme={darkMode ? "dark" : "default"}
-                  conditionalRowStyles={[
-                    {
-                      when: (row) => (row.type === 1 || row.type === 5) && !!row.couponCode,
-                      style: {
-                        backgroundColor: darkMode ? "rgba(79, 70, 229, 0.35)" : "rgba(79, 70, 229, 0.12)",
-                      },
-                    },
-                  ]}
+                  conditionalRowStyles={
+                    SHOW_COUPONS_AND_PROMOTIONS_MODULE
+                      ? [
+                          {
+                            when: (row) => (row.type === 1 || row.type === 5) && !!row.couponCode,
+                            style: {
+                              backgroundColor: darkMode ? "rgba(79, 70, 229, 0.35)" : "rgba(79, 70, 229, 0.12)",
+                            },
+                          },
+                        ]
+                      : []
+                  }
                 />
               </Col>
             </Row>
@@ -2610,7 +2616,7 @@ function SalesListManagerPage() {
                       {loadingTotal && (
                         <span className="spinner-border spinner-border-sm mr-1"></span>
                       )}
-                      {!!couponDifferential > 0 && (
+                      {SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponDifferential > 0 && (
                         <b>
                           Diff Cupón:{" "}
                           <NumberFormat

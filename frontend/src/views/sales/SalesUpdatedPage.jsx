@@ -12,6 +12,7 @@ import { WeightProduct } from '../../helpers/weight';
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css";
 import Swal from 'sweetalert2';
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
 
 function SalesUpdatedPage() {
     const location = history.location;
@@ -307,7 +308,7 @@ function SalesUpdatedPage() {
         }
 
         var offer = null;
-        if (offerProducts && offerProducts.length > 0) {
+        if (SHOW_COUPONS_AND_PROMOTIONS_MODULE && offerProducts && offerProducts.length > 0) {
             offer = offerProducts.find(item => item.product.code === data.code);
         }
 

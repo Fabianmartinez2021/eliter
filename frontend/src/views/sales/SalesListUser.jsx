@@ -137,7 +137,7 @@ function SalesListUserPage() {
 					else if (row.isSumation)
 					  return (
 						<>
-						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
+						  <Badge color={"warning"} pill className="h6 p-2 mt-1">
 							{"ABONO"}
 						  </Badge>
 						</>
@@ -172,7 +172,7 @@ function SalesListUserPage() {
 					  if (row.type === 1) {
 					  return (
 						<>
-						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
+						  <Badge color={"success"} pill className="h6 p-2 mt-1">
 							{"DETAL"}
 						  </Badge>
 						</>
@@ -180,7 +180,7 @@ function SalesListUserPage() {
 					} else if (row.type === 5) {
 					  return (
 						<>
-						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
+						  <Badge color={"success"} pill className="h6 p-2 mt-1">
 							{"DETAL F"}
 						  </Badge>
 						</>
@@ -501,7 +501,7 @@ function SalesListUserPage() {
 										{"CRÉDITO"}
 									</Badge> : (
 										data.isSumation ? 
-											<Badge color={"danger"} pill className="h6 p-2 mt-1">
+											<Badge color={"warning"} pill className="h6 p-2 mt-1">
 												{"ABONO"}
 											</Badge> : (
 
@@ -510,7 +510,7 @@ function SalesListUserPage() {
 													{"MAYOR"}
 												</Badge> : 
 												
-												<Badge color={"danger"} pill className="h6 p-2 mt-1">
+												<Badge color={"success"} pill className="h6 p-2 mt-1">
 													{"DETAL"}
 												</Badge>
 											)

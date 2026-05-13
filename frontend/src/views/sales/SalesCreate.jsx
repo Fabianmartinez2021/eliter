@@ -22,6 +22,8 @@ import { WeightProduct } from '../../helpers/weight'
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css";
 import "../../assets/css/coupon.css";
+import { SHOW_COUPONS_AND_PROMOTIONS_MODULE } from '../../config/config';
+import { getCatalogUnitPriceBsUsd } from '../../helpers/catalogPriceDisplay';
 
 //Componente filtro
 const FilterComponent = ({ filterText, onFilter, onClear }) => {
@@ -197,9 +199,9 @@ function SalesCreatePage() {
     const [couponError, setCouponError] = useState('');
     const [validatingCoupon, setValidatingCoupon] = useState(false);
     const [couponAmounts, setCouponAmounts] = useState(null); // { totalBeforeDiscount, couponDiscount, totalAfterDiscount }
-    const effectiveTotal = useMemo(() => couponValid && total > 0 ? Math.round(total * 0.95 * 100) / 100 : total, [total, couponValid]);
+    const effectiveTotal = useMemo(() => SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid && total > 0 ? Math.round(total * 0.95 * 100) / 100 : total, [total, couponValid]);
     const totalInDollars = useMemo(() => valueDollar > 0 ? total / valueDollar : 0, [total, valueDollar]);
-    const canUseCoupon = total > 0 && totalInDollars >= 10;
+    const canUseCoupon = SHOW_COUPONS_AND_PROMOTIONS_MODULE && total > 0 && totalInDollars >= 10;
 
     //Añadir producto a tabla
     const onCreateData = (data, e) => {
@@ -215,7 +217,7 @@ function SalesCreatePage() {
 
             //Obtener ofertas si existen
             var offer = null;
-            if (offerProducts && offerProducts.length > 0) {
+            if (SHOW_COUPONS_AND_PROMOTIONS_MODULE && offerProducts && offerProducts.length > 0) {
                 offer = offerProducts.find(item => {
                     return String(item.product.code ?? '').trim() === codeInput;
                 })
@@ -276,7 +278,7 @@ function SalesCreatePage() {
                 }
                 setTotalWeight(sumWeight);
                 //setear por defecto el total en punto (con descuento cupón si aplica)
-                setValue('pAmmount', (couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
+                setValue('pAmmount', (SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
             })
             //focus en el codigo nuevamente
             codeRef.current.focus();
@@ -316,7 +318,7 @@ function SalesCreatePage() {
         // Para metas/objetivos debe trabajarse en dólares (sin multiplicar por la tasa).
         // `totalInDollars` ya se calcula dividiendo el total (en Bs) entre la tasa.
         data.totalDollar = parseFloat(totalInDollars.toFixed(2));
-        data.couponCode = couponValid ? couponCodeInput.trim() : '';
+        data.couponCode = SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? couponCodeInput.trim() : '';
         data.totalWeight = totalWeight;//total peso
         // Usar tasa del ticket si fue fijada (ticket creado tras cierre); si no, tasa actual
         if (rowSelected && rowSelected.valueDollar != null && rowSelected.valueDollar !== undefined) {
@@ -396,7 +398,7 @@ function SalesCreatePage() {
         data.total = creditTotalBs;
         data.totalDollar = creditTotalDollar;
         data.totalWeight = totalWeight;
-        data.couponCode = couponValid ? couponCodeInput.trim() : '';
+        data.couponCode = SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? couponCodeInput.trim() : '';
 
         if (rowSelected && rowSelected.valueDollar != null && rowSelected.valueDollar !== undefined) {
             data.valueDollar = Number(rowSelected.valueDollar).toFixed(2);
@@ -477,7 +479,7 @@ function SalesCreatePage() {
             setTotalWeight(sumWeight);
 
             //setear por defecto el total en punto (con descuento cupón si aplica)
-            setValue('pAmmount', (couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
+            setValue('pAmmount', (SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? Math.round(sum * 0.95 * 100) / 100 : sum).toFixed(2));
         })
 
         if (preSale.length == 0) {
@@ -489,6 +491,7 @@ function SalesCreatePage() {
 
     // Validar cupón (solo para UX; la reserva real es al crear la venta). Envía total para obtener montos con/sin descuento.
     const handleValidateCoupon = async () => {
+        if (!SHOW_COUPONS_AND_PROMOTIONS_MODULE) return;
         const code = couponCodeInput ? String(couponCodeInput).trim() : '';
         if (!code) {
             setCouponError('Ingrese el código del cupón');
@@ -666,7 +669,7 @@ function SalesCreatePage() {
     const [totalVes, setTotalVes] = useState(0);
 
     // Totales en cada moneda (cambian con cupón: con descuento = effectiveTotal, sin = total)
-    const amountForPayment = couponValid ? effectiveTotal : total;
+    const amountForPayment = SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid ? effectiveTotal : total;
     useEffect(() => {
         if (amountForPayment > 0 && listCoin && listCoin.length > 0) {
             setTotalDollar(valueDollar > 0 ? amountForPayment / valueDollar : 0);
@@ -1463,7 +1466,7 @@ function SalesCreatePage() {
                                                     </div>
                                                 </div>
                                             )}
-                                            {couponValid && total > 0 && listCoin && listCoin.length >= 3 && (
+                                            {SHOW_COUPONS_AND_PROMOTIONS_MODULE && couponValid && total > 0 && listCoin && listCoin.length >= 3 && (
                                                 <div className="coupon-discount-preview ml-2">
                                                     <div className="before">
                                                         Sin descuento: $ <NumberFormat value={(total / (listCoin[0]?.value || 1)).toFixed(2)} displayType="text" thousandSeparator={true} />
@@ -1955,28 +1958,47 @@ function SalesCreatePage() {
                                                 <tr>
                                                     <th>Código</th>
                                                     <th>Producto</th>
+                                                    <th className="text-nowrap">Bs</th>
+                                                    <th className="text-nowrap">$</th>
                                                     <th style={{ width: 120 }} />
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {catalogRowsFiltered.length === 0 ? (
                                                     <tr>
-                                                        <td colSpan={3} className="text-center py-3">
+                                                        <td colSpan={5} className="text-center py-3">
                                                             {listProducts && listProducts.length ? 'Sin coincidencias' : 'Cargando catálogo…'}
                                                         </td>
                                                     </tr>
                                                 ) : (
-                                                    catalogRowsFiltered.map((p, idx) => (
+                                                    catalogRowsFiltered.map((p, idx) => {
+                                                        const { bs, usd } = getCatalogUnitPriceBsUsd(p, valueDollar, offerProducts);
+                                                        return (
                                                         <tr key={p._id || p.id || `${String(p.code)}-${idx}`}>
                                                             <td className="text-nowrap">{p.code}</td>
                                                             <td>{p.name}</td>
+                                                            <td className="text-nowrap">
+                                                                {bs != null ? (
+                                                                    <NumberFormat value={bs.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'Bs '} />
+                                                                ) : (
+                                                                    <span className="text-muted">—</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="text-nowrap">
+                                                                {usd != null ? (
+                                                                    <NumberFormat value={usd.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$ '} />
+                                                                ) : (
+                                                                    <span className="text-muted">—</span>
+                                                                )}
+                                                            </td>
                                                             <td>
                                                                 <Button color="primary" size="sm" type="button" onClick={() => selectProductFromCatalog(p)}>
                                                                     Seleccionar
                                                                 </Button>
                                                             </td>
                                                         </tr>
-                                                    ))
+                                                        );
+                                                    })
                                                 )}
                                             </tbody>
                                         </Table>
