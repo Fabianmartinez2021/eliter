@@ -200,14 +200,19 @@ function PendingPaymentsPage() {
 			name: 'Acciones',
 			omit: user.role !== 1,
 			width: '200px',
-			cell: (row) => (
+			cell: (row) => {
+				const pendingAmt = Number(row.pending);
+				const isSettled = Boolean(row.status) || (Number.isFinite(pendingAmt) && pendingAmt <= 0);
+				if (isSettled) {
+					return null;
+				}
+				return (
 				<div className="d-flex flex-wrap" style={{ gap: '6px' }}>
 					<Button
 						color="primary"
 						size="sm"
 						outline
-						disabled={row.status}
-						title={row.status ? 'Cuenta cerrada' : 'Editar datos del cliente'}
+						title="Editar datos del cliente"
 						onClick={() => {
 							setPendingEditRow(row);
 							setPendingEditForm({
@@ -230,12 +235,7 @@ function PendingPaymentsPage() {
 						color="danger"
 						size="sm"
 						outline
-						disabled={row.status}
-						title={
-							row.status
-								? 'Cuenta ya pagada'
-								: 'Eliminar crédito sin abonos (reintegra inventario)'
-						}
+						title="Eliminar crédito sin abonos (reintegra inventario)"
 						onClick={async () => {
 							const id = row.id || row._id;
 							if (
@@ -269,7 +269,8 @@ function PendingPaymentsPage() {
 						Eliminar
 					</Button>
 				</div>
-			),
+				);
+			},
 		},
 	];
   

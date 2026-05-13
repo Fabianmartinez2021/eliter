@@ -188,29 +188,6 @@ function UserCreatePage() {
                                         </Col>
                                     </Row>
                                     <Row form>
-                                        <Col md={12}>
-                                            <FormGroup>
-                                                <Label for="email">Correo (opcional)</Label>
-                                                <input
-                                                    maxLength="254"
-                                                    autoComplete="email"
-                                                    type="email"
-                                                    placeholder="ejemplo@correo.com"
-                                                    className={'form-control' + (errors.email ? ' is-invalid' : '')}
-                                                    name="email"
-                                                    ref={register({
-                                                        pattern: {
-                                                            value: /^([^\s@]+@[^\s@]+\.[^\s@]+)?$/,
-                                                            message: "Correo inválido"
-                                                        }
-                                                    })}
-                                                />
-                                                {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
-                                                <small className="text-muted">Opcional. Solo para referencia o contacto interno.</small>
-                                            </FormGroup>
-                                        </Col>
-                                    </Row>
-                                    <Row form>
                                         <Col md={6}>
                                         <FormGroup>
                                             <Label for="role">Rol</Label>{' '}

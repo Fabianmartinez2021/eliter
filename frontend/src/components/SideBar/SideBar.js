@@ -57,6 +57,7 @@ import { keyboardShortcuts } from './keyboardShortcuts';
 import { getCollapseIdForRoute } from './routeCollapseMap';
 import MenuSection from './MenuSection';
 import MenuItem from './MenuItem';
+import MenuSubGroupHeading from './MenuSubGroupHeading';
 import Icon from '@iconify/react';
 
 
@@ -221,7 +222,7 @@ function SideBar() {
 							</MenuSection>
 							<MenuSection
 								collapseId={13}
-								title="Registrar Ventas"
+								title="Ventas y cobros"
 								icon={cashRegister}
 								collapses={collapses}
 								changeCollapse={changeCollapse}
@@ -229,6 +230,7 @@ function SideBar() {
 								roles={[1,2,3,4,5,6,7,9,10]}
 								userRole={user.role}
 							>
+								<MenuSubGroupHeading label="Ventas estándar" darkMode={darkMode} />
 								<MenuItem
 									to="/credit-payment"
 									icon={bookMedical}
@@ -277,17 +279,7 @@ function SideBar() {
 									roles={[1,3,4,7,10]}
 									userRole={user.role}
 								/>
-							</MenuSection>
-							<MenuSection
-								collapseId={24}
-								title="Registrar Ventas Especiales"
-								icon={cashRegister}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Ventas especiales" darkMode={darkMode} />
 								<MenuItem
 									to="/credit-special-payment"
 									icon={bookMedical}
@@ -320,11 +312,35 @@ function SideBar() {
 									roles={[1,3,4]}
 									userRole={user.role}
 								/>
-								
+								<MenuSubGroupHeading label="Vales" darkMode={darkMode} />
+								<MenuItem
+									to="/vale-payments"
+									icon={bookMedical}
+									text="Pagar vale pendiente"
+									darkMode={darkMode}
+									roles={[1,2,9,10]}
+									userRole={user.role}
+								/>
+								<MenuItem
+									to="/register-vale"
+									icon={cartPlus}
+									text="Registrar venta al Detal"
+									darkMode={darkMode}
+									roles={[1,2,9,10]}
+									userRole={user.role}
+								/>
+								<MenuItem
+									to="/pending-vales"
+									icon={bookMedical}
+									text="Vales pendientes"
+									darkMode={darkMode}
+									roles={[1,2,9,10]}
+									userRole={user.role}
+								/>
 							</MenuSection>
 							<MenuSection
 								collapseId={11}
-								title="Caja de tienda"
+								title="Caja y caja fuerte"
 								icon={briefcaseIcon}
 								collapses={collapses}
 								changeCollapse={changeCollapse}
@@ -332,6 +348,7 @@ function SideBar() {
 								roles={[1,2,3,5,6,7,9,10]}
 								userRole={user.role}
 							>
+								<MenuSubGroupHeading label="Caja de tienda" darkMode={darkMode} />
 								<MenuItem
 									to="/box-opening"
 									icon={folderPlus}
@@ -404,17 +421,7 @@ function SideBar() {
 									roles={[1,2,5,6,9,10]}
 									userRole={user.role}
 								/>
-							</MenuSection>
-							<MenuSection
-								collapseId={12}
-								title="Caja Fuerte"
-								icon={briefcaseIcon}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,3,5,6,7,9,10]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Caja fuerte (resguardos)" darkMode={darkMode} />
 								<MenuItem
 									to="/resguard-report"
 									icon={folderPlus}
@@ -770,41 +777,6 @@ function SideBar() {
 								/>
 							</MenuSection>
 							<MenuSection
-								collapseId={26}
-								title="Registrar Vales"
-								icon={cashRegister}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,9]}
-								userRole={user.role}
-							>
-								<MenuItem
-									to="/vale-payments"
-									icon={bookMedical}
-									text="Pagar vale pendiente"
-									darkMode={darkMode}
-									roles={[1,2,9,10]}
-									userRole={user.role}
-								/>
-								<MenuItem
-									to="/register-vale"
-									icon={cartPlus}
-									text="Registrar venta al Detal"
-									darkMode={darkMode}
-									roles={[1,2,9,10]}
-									userRole={user.role}
-								/>
-								<MenuItem
-									to="/pending-vales"
-									icon={bookMedical}
-									text="Vales pendientes"
-									darkMode={darkMode}
-									roles={[1,2,9,10]}
-									userRole={user.role}
-								/>
-							</MenuSection>
-							<MenuSection 
 								collapseId={25}
 								title="Inventario especial"
 								icon={dollyIcon}
@@ -923,15 +895,16 @@ function SideBar() {
 								/>
 							</MenuSection>
 							<MenuSection
-								collapseId={15}
-								title="Reportes de inventario"
+								collapseId={30}
+								title="Reportes"
 								icon={clipboardCheck}
 								collapses={collapses}
 								changeCollapse={changeCollapse}
 								darkMode={darkMode}
-								roles={[1,2,3,5,6,7,9,10]}
+								roles={[1,2,3,4,5,6,7,9,10]}
 								userRole={user.role}
 							>
+								<MenuSubGroupHeading label="Inventario" darkMode={darkMode} />
 								<MenuItem
 									to="/inventory-report"
 									icon={clipboardIcon}
@@ -988,17 +961,7 @@ function SideBar() {
 									roles={[1,2,3,5,6,7,9]}
 									userRole={user.role}
 								/>
-							</MenuSection>
-							<MenuSection
-								collapseId={16}
-								title="Reportes de clientes"
-								icon={clipboardCheck}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,3,4,5,6,7,9]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Clientes" darkMode={darkMode} />
 								<MenuItem
 									to="/client-list"
 									icon={maleIcon}
@@ -1015,17 +978,7 @@ function SideBar() {
 									roles={[]}
 									userRole={user.role}
 								/>
-							</MenuSection>
-							<MenuSection
-								collapseId={17}
-								title="Reportes de ventas"
-								icon={clipboardCheck}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,3,4,5,6,7,9,10]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Ventas" darkMode={darkMode} />
 								<MenuItem
 									to="/sales"
 									icon={clipboardCheck}
@@ -1074,18 +1027,7 @@ function SideBar() {
 									roles={[1,2,10]}
 									userRole={user.role}
 								/>
-								
-							</MenuSection>
-							<MenuSection
-								collapseId={28}
-								title="Cuentas por pagar"
-								icon={moneyBillWave}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,3,4,5,6,7,9,10]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Cuentas por pagar" darkMode={darkMode} />
 								<MenuItem
 									to="/accounts-payable"
 									icon={listAlt}
@@ -1102,17 +1044,7 @@ function SideBar() {
 									roles={[1,2,3,6,7]}
 									userRole={user.role}
 								/>
-							</MenuSection>
-							<MenuSection
-								collapseId={18}
-								title="Reportes financieros"
-								icon={clipboardCheck}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2,3,5,6,7,9,10]}
-								userRole={user.role}
-							>
+								<MenuSubGroupHeading label="Finanzas" darkMode={darkMode} />
 								<MenuItem
 									to="/commissions-report"
 									icon={chartLine}
@@ -1153,6 +1085,15 @@ function SideBar() {
 									roles={[1,2,9,10]}
 									userRole={user.role}
 								/>
+								<MenuSubGroupHeading label="Otros" darkMode={darkMode} />
+								<MenuItem
+									to="/cron-history"
+									icon={undoAlt}
+									text="Historial de Cron"
+									darkMode={darkMode}
+									roles={[1,2]}
+									userRole={user.role}
+								/>
 							</MenuSection>
 							{/* Oculto: Reportes de televentas (todos los usuarios)
 							<MenuSection
@@ -1183,25 +1124,6 @@ function SideBar() {
 								/>
 							</MenuSection>
 							*/}
-							<MenuSection
-								collapseId={20}
-								title="Otros reportes"
-								icon={clipboardCheck}
-								collapses={collapses}
-								changeCollapse={changeCollapse}
-								darkMode={darkMode}
-								roles={[1,2]}
-								userRole={user.role}
-							>
-								<MenuItem
-									to="/cron-history"
-									icon={undoAlt}
-									text="Historial de Cron"
-									darkMode={darkMode}
-									roles={[1,2]}
-									userRole={user.role}
-								/>
-							</MenuSection>
 							<MenuSection
 								collapseId={27}
 								title="Soporte técnico"

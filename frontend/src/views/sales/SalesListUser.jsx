@@ -119,7 +119,7 @@ function SalesListUserPage() {
 					if (row.isCredit && row.type === 4)
 					  return (
 						<>
-						  <Badge color={"primary"} pill className="h6 p-2 mt-1">
+						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
 							{"CRÉDITO"}
 						  </Badge>
 						</>
@@ -127,7 +127,7 @@ function SalesListUserPage() {
 					else if (row.isCredit && row.type === 8)
 						return (
 						  <>
-							<Badge color={"primary"} pill className="h6 p-2 mt-1">
+							<Badge color={"danger"} pill className="h6 p-2 mt-1">
 							  {"CRÉDITO F"}
 							</Badge>
 						  </>
@@ -137,7 +137,7 @@ function SalesListUserPage() {
 					else if (row.isSumation)
 					  return (
 						<>
-						  <Badge color={"warning"} pill className="h6 p-2 mt-1">
+						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
 							{"ABONO"}
 						  </Badge>
 						</>
@@ -172,7 +172,7 @@ function SalesListUserPage() {
 					  if (row.type === 1) {
 					  return (
 						<>
-						  <Badge color={"success"} pill className="h6 p-2 mt-1">
+						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
 							{"DETAL"}
 						  </Badge>
 						</>
@@ -180,7 +180,7 @@ function SalesListUserPage() {
 					} else if (row.type === 5) {
 					  return (
 						<>
-						  <Badge color={"success"} pill className="h6 p-2 mt-1">
+						  <Badge color={"danger"} pill className="h6 p-2 mt-1">
 							{"DETAL F"}
 						  </Badge>
 						</>
@@ -497,11 +497,11 @@ function SalesListUserPage() {
 							<td>{data.names ? data.names : ''}</td>
 							<td>{data.total ? <NumberFormat value={data.total?data.total.toFixed(2):data.total} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /> : ''}</td>
 							<td>{data.isCredit ? 
-									<Badge color={"primary"} pill className="h6 p-2 mt-1">
+									<Badge color={"danger"} pill className="h6 p-2 mt-1">
 										{"CRÉDITO"}
 									</Badge> : (
 										data.isSumation ? 
-											<Badge color={"warning"} pill className="h6 p-2 mt-1">
+											<Badge color={"danger"} pill className="h6 p-2 mt-1">
 												{"ABONO"}
 											</Badge> : (
 
@@ -510,7 +510,7 @@ function SalesListUserPage() {
 													{"MAYOR"}
 												</Badge> : 
 												
-												<Badge color={"success"} pill className="h6 p-2 mt-1">
+												<Badge color={"danger"} pill className="h6 p-2 mt-1">
 													{"DETAL"}
 												</Badge>
 											)

@@ -5,7 +5,7 @@ import { Alert } from 'reactstrap';
 import { userActions, alertActions } from '../actions';
 
 import ExamplesNavbar from '../components/Navbars/LoginNavbar';
-import EliterLogo from '../components/Brand/EliterLogo';
+import LoginBrandMark from '../components/Brand/LoginBrandMark';
 import packageJson from '../../package.json';
 
 function LoginPage() {
@@ -66,13 +66,21 @@ function LoginPage() {
   return (
     <>
       <ExamplesNavbar />
-      <div className="login-split">
+      <div className="login-split-page">
+        <div className="login-split-lava" aria-hidden="true">
+          <span className="login-split-lava-blob login-split-lava-blob--1" />
+          <span className="login-split-lava-blob login-split-lava-blob--2" />
+          <span className="login-split-lava-blob login-split-lava-blob--3" />
+          <span className="login-split-lava-blob login-split-lava-blob--4" />
+          <span className="login-split-lava-blob login-split-lava-blob--5" />
+          <span className="login-split-lava-blob login-split-lava-blob--6" />
+        </div>
+        <div className="login-split login-split--lava">
         <div className="login-split-left">
           <div className="login-split-brand">
-            <div className="login-split-logo-wrap">
-              <EliterLogo className="login-split-logo" title="Eliter" />
+            <div className="login-split-logo-wrap login-split-logo-wrap--svg">
+              <LoginBrandMark className="login-split-brand-svg" />
             </div>
-            <p className="login-split-tagline">Eliter</p>
             <div className="login-split-brand-footer">
               <span className="login-split-version">v{packageJson.version}</span>
               <span className="login-split-copyright">© {new Date().getFullYear()} Eliter</span>
@@ -80,13 +88,11 @@ function LoginPage() {
               <span className="login-split-supported">última actualización: 17/03/2026 12:33 p.m.</span>
             </div>
           </div>
-          <div className="login-split-deco login-split-deco-1" aria-hidden="true" />
-          <div className="login-split-deco login-split-deco-2" aria-hidden="true" />
         </div>
         <div className="login-split-right">
           <div className="login-split-form">
             <h1 className="login-split-title">Iniciar sesión</h1>
-            <p className="login-split-sub">Accede con tu usuario o correo y contraseña</p>
+            <p className="login-split-sub">Accede con tu usuario y contraseña</p>
 
             {alert.message && (
               <Alert
@@ -109,7 +115,8 @@ function LoginPage() {
                   name="username"
                   value={username}
                   autoComplete="username"
-                  placeholder="Usuario"
+                  placeholder="Nombre de usuario"
+                  title="Solo nombre de usuario, sin correo electrónico"
                   className={'login-split-input' + (submitted && !username ? ' error' : '')}
                   onChange={handleChange}
                 />
@@ -139,6 +146,7 @@ function LoginPage() {
               </button>
             </form>
           </div>
+        </div>
         </div>
       </div>
     </>

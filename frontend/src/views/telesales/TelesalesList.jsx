@@ -118,14 +118,14 @@ function TelesalesListPage() {
 				//	Si es un crédito
 				if (row.isCredit)
 					return <>
-							<Badge color={"primary"} pill className="h6 p-2 mt-1">
+							<Badge color={"danger"} pill className="h6 p-2 mt-1">
 								{"CRÉDITO"}
 							</Badge>
 						</>
 				//	Si es un abono 
 				else if (row.isSumation)
 					return <>
-							<Badge color={"warning"} pill className="h6 p-2 mt-1">
+							<Badge color={"danger"} pill className="h6 p-2 mt-1">
 								{"ABONO"}
 							</Badge>
 						</>
@@ -139,7 +139,7 @@ function TelesalesListPage() {
 				//	Si es un pago al detal
 				else
 					return <>
-							<Badge color={"success"} pill className="h6 p-2 mt-1">
+							<Badge color={"danger"} pill className="h6 p-2 mt-1">
 								{"DETAL"}
 							</Badge>
 						</>
@@ -481,11 +481,11 @@ function TelesalesListPage() {
 							<td>{data.names ? data.names : ''}</td>
 							<td>{data.total ? <NumberFormat value={data.total?data.total.toFixed(2):data.total} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /> : ''}</td>
 							<td>{data.isCredit ? 
-									<Badge color={"primary"} pill className="h6 p-2 mt-1">
+									<Badge color={"danger"} pill className="h6 p-2 mt-1">
 										{"CRÉDITO"}
 									</Badge> : (
 										data.isSumation ? 
-											<Badge color={"warning"} pill className="h6 p-2 mt-1">
+											<Badge color={"danger"} pill className="h6 p-2 mt-1">
 												{"ABONO"}
 											</Badge> : (
 
@@ -494,7 +494,7 @@ function TelesalesListPage() {
 													{"MAYOR"}
 												</Badge> : 
 												
-												<Badge color={"success"} pill className="h6 p-2 mt-1">
+												<Badge color={"danger"} pill className="h6 p-2 mt-1">
 													{"DETAL"}
 												</Badge>
 											)

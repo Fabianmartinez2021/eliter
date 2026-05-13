@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { salesActions, ticketActions, userActions, productActions, pendingPaymentsActions } from '../../actions';
-import { salesService, validateCoupon as validateCouponService } from '../../services';
+import { validateCoupon as validateCouponService } from '../../services';
 import Swal from 'sweetalert2';
 // core components
 import AdminNavbar from "../../components/Navbars/AdminNavbar";
@@ -22,8 +22,6 @@ import { WeightProduct } from '../../helpers/weight'
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css";
 import "../../assets/css/coupon.css";
-import confetti from 'canvas-confetti';
-import { MetaBubble } from '../../components/MetaBubble/MetaBubble';
 
 //Componente filtro
 const FilterComponent = ({ filterText, onFilter, onClear }) => {
@@ -40,17 +38,6 @@ import { Typeahead, withAsync } from 'react-bootstrap-typeahead';
 const AsyncTypeahead = withAsync(Typeahead);
 
 function SalesCreatePage() {
-
-    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth <= 768);
-
-    // Detectar cambios en el tamaño de la ventana
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     useEffect(() => {
         document.body.classList.add("landing-page");
@@ -85,9 +72,6 @@ function SalesCreatePage() {
     const getting = useSelector(state => state.sales.getting);
     const sales = useSelector(state => state.sales);
     const productsState = useSelector(state => state.products);
-    // Estado local para weeklyTotal
-    const [weeklyTotal, setWeeklyTotal] = useState(null);
-    const [loadingWeeklyTotal, setLoadingWeeklyTotal] = useState(false);
 
     //Obtener monedas, productos y terminales de sucursal
     useEffect(() => {
@@ -105,26 +89,6 @@ function SalesCreatePage() {
             dispatch(ticketActions.dataTable({ id: user.agency.id }));
         }
     }, [user?.agency?.id, dispatch]);
-
-    //Obtener total semanal en tiempo real al montar el componente
-    useEffect(() => {
-        if (user && user.agency && user.agency.id) {
-            const fetchWeeklyTotal = async () => {
-                setLoadingWeeklyTotal(true);
-                try {
-                    const data = await salesService.getWeeklyTotalRealtime({ 
-                        agency: user.agency.id 
-                    });
-                    setWeeklyTotal(data);
-                } catch (error) {
-                    console.error('Error al obtener weeklyTotal:', error);
-                } finally {
-                    setLoadingWeeklyTotal(false);
-                }
-            };
-            fetchWeeklyTotal();
-        }
-    }, [user]);
 
     const [listCoin, setListCoin] = useState(null);
     const [listProducts, setListProducts] = useState(null);
@@ -592,20 +556,6 @@ function SalesCreatePage() {
             setDataSale(null);
             clientNamesRef.current.clear();
             clientNamesRef.current.focus();
-            // Actualizar total semanal después de registrar venta
-            if (user && user.agency && user.agency.id) {
-                const fetchWeeklyTotal = async () => {
-                    try {
-                        const data = await salesService.getWeeklyTotalRealtime({ 
-                            agency: user.agency.id 
-                        });
-                        setWeeklyTotal(data);
-                    } catch (error) {
-                        console.error('Error al obtener weeklyTotal:', error);
-                    }
-                };
-                fetchWeeklyTotal();
-            }
         }
     }, [statusRegister.success]);
 
@@ -616,19 +566,6 @@ function SalesCreatePage() {
             setDataSale(null);
             clientNamesRef.current.clear();
             clientNamesRef.current.focus();
-            if (user && user.agency && user.agency.id) {
-                const fetchWeeklyTotal = async () => {
-                    try {
-                        const data = await salesService.getWeeklyTotalRealtime({
-                            agency: user.agency.id
-                        });
-                        setWeeklyTotal(data);
-                    } catch (error) {
-                        console.error('Error al obtener weeklyTotal:', error);
-                    }
-                };
-                fetchWeeklyTotal();
-            }
         }
     }, [statusRegisterPendingPayments.success]);
 
@@ -1189,110 +1126,6 @@ function SalesCreatePage() {
 
     const [selected, setSelected] = useState([]);
 
-    // Estado para controlar la celebración de meta semanal
-    const [showConfetti, setShowConfetti] = useState(false);
-
-    // Meta alcanzada (recalculo en dólares para evitar multiplicar por la tasa)
-    const weeklyGoalCalculation = weeklyTotal?.weeklyGoalCalculation || null;
-    const goalUsd = weeklyGoalCalculation?.weeklyGoal != null ? Number(weeklyGoalCalculation.weeklyGoal) : null;
-    const totalAmountBs =
-        weeklyGoalCalculation?.totalAmount != null ? Number(weeklyGoalCalculation.totalAmount) : null;
-    const usdRateBsPerUsd = valueDollar > 0 ? Number(valueDollar) : null;
-
-    // Si el backend entrega `totalAmount` en Bs, convertimos a USD dividiendo por la tasa.
-    const totalUsdFromBs =
-        totalAmountBs != null && usdRateBsPerUsd && !Number.isNaN(usdRateBsPerUsd)
-            ? totalAmountBs / usdRateBsPerUsd
-            : null;
-
-    // Algunos backends ya retornan total en dólares; si existe, lo preferimos.
-    const totalUsd =
-        weeklyGoalCalculation?.totalAmountDollar != null
-            ? Number(weeklyGoalCalculation.totalAmountDollar)
-            : totalUsdFromBs;
-
-    const computedWeeklyGoalPercentage =
-        goalUsd != null && totalUsd != null && !Number.isNaN(goalUsd) && !Number.isNaN(totalUsd)
-            ? (totalUsd / goalUsd) * 100
-            : null;
-
-    const computedWeeklyGoalReached =
-        goalUsd != null && totalUsd != null && !Number.isNaN(goalUsd) && !Number.isNaN(totalUsd)
-            ? totalUsd >= goalUsd
-            : false;
-
-    // Evita estado intermedio con porcentaje inflado mientras llega la tasa de dólar.
-    const canComputeGoalProgress =
-        goalUsd != null &&
-        totalUsd != null &&
-        !Number.isNaN(goalUsd) &&
-        !Number.isNaN(totalUsd);
-
-    // Booleano de meta alcanzada basado en el recalculo
-    const isGoalMet = computedWeeklyGoalReached;
-
-    // Para recordar si en esta semana ya vimos la animación
-    const confettiSeenRef = useRef(false);
-    // Para recordar el último valor de isGoalMet y detectar cambios
-    const prevGoalMetRef = useRef(false);
-
-    // Clave de meta/semana para reiniciar la celebración (se reinicia, por ejemplo, los lunes)
-    const goalKey = weeklyTotal?.goalDate || weeklyTotal?.weekInfo?.startDate || null;
-
-    // Al cambiar de semana/meta, leemos si ya se vio la animación esta semana
-    useEffect(() => {
-        if (!goalKey || !canComputeGoalProgress) return;
-
-        const storageKey = `weeklyGoalConfettiSeen_${goalKey}`;
-        const seenInStorage = typeof window !== 'undefined'
-            ? window.localStorage.getItem(storageKey) === 'true'
-            : false;
-
-        confettiSeenRef.current = seenInStorage;
-        // Si ya se vio, asumimos que la meta está "confirmada" para no volver a disparar
-        prevGoalMetRef.current = seenInStorage ? true : false;
-        setShowConfetti(false);
-    }, [goalKey]);
-
-    // Mostrar confeti solo cuando pasamos de "no se alcanzó la meta" -> "meta alcanzada"
-    // y solo una vez por semana/meta (persistido en localStorage)
-    useEffect(() => {
-        if (!goalKey) return;
-
-        let timeoutId;
-        const storageKey = `weeklyGoalConfettiSeen_${goalKey}`;
-        const prev = prevGoalMetRef.current;
-
-        // Cambio de false -> true y aún no se ha visto la animación esta semana
-        if (!prev && isGoalMet && !confettiSeenRef.current) {
-            setShowConfetti(true);
-
-            confetti({
-                particleCount: 200,
-                spread: 70,
-                origin: { y: 0.6 },
-            });
-
-            confettiSeenRef.current = true;
-            if (typeof window !== 'undefined') {
-                window.localStorage.setItem(storageKey, 'true');
-            }
-
-            timeoutId = setTimeout(() => {
-                setShowConfetti(false);
-            }, 10000);
-        }
-
-        // Actualizar el valor previo
-        prevGoalMetRef.current = isGoalMet;
-
-        return () => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-        };
-    }, [isGoalMet, goalKey, canComputeGoalProgress]);
-
     return (
         <>
             <div className={`d-flex ${darkMode ? "dark-mode" : ""}`} id="wrapper">
@@ -1669,7 +1502,7 @@ function SalesCreatePage() {
                                                     </InputGroup>
                                                     {!canUseCoupon && total > 0 && <div className="small mt-1" style={{ color: '#6c757d' }}>Disponible en compras de $10 o más</div>}
                                                     {couponError && <div className="small mt-1" style={{ color: '#c62828' }}>{couponError}</div>}
-                                                    {couponValid && !couponError && <div className="small mt-1" style={{ color: '#2e7d32', fontWeight: 500 }}>✓ Cupón válido — 5% de descuento aplicado</div>}
+                                                    {couponValid && !couponError && <div className="small mt-1" style={{ color: 'var(--eliter-green, #328a6c)', fontWeight: 500 }}>✓ Cupón válido — 5% de descuento aplicado</div>}
                                                 </div>
                                             </FormGroup>
                                         </Col>
@@ -2312,14 +2145,6 @@ function SalesCreatePage() {
                             </Modal>
                         </Container>
                     </div>
-                    <MetaBubble
-                        title="Meta alcanzada"
-                        percentage={computedWeeklyGoalPercentage}
-                        reached={computedWeeklyGoalReached}
-                        loading={!weeklyTotal || !canComputeGoalProgress}
-                        darkMode={darkMode}
-                        isMobile={isMobile}
-                    />
                 </div>
                
             </div>

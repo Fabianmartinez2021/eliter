@@ -1,15 +1,14 @@
 /* ========== Eliter — paleta y tokens de marca ==========
-   Colores alineados con identidad: verde vibrante + carbón + superficie clara.
-   Las variables --naranja* mantienen nombres históricos del proyecto pero apuntan al verde Eliter
-   para no romper cientos de reglas que ya usan esos nombres. */
+   Verde primario unificado (bosque / login): todo el UI usa --eliter-green* y --naranja* (legacy). */
 
 :root {
-  --eliter-green: #107c10;
-  --eliter-green-bright: #22c55e;
-  --eliter-green-dark: #0b5a0b;
-  --eliter-green-soft: #e8f5e9;
-  --eliter-green-rgb: 16, 124, 16;
-  --eliter-green-bright-rgb: 34, 197, 94;
+  /* Verde base más claro que el bosque anterior (#1a523d): menos pesado en UI */
+  --eliter-green: #328a6c;
+  --eliter-green-bright: #52c4a8;
+  --eliter-green-dark: #246b52;
+  --eliter-green-soft: #eef8f6;
+  --eliter-green-rgb: 50, 138, 108;
+  --eliter-green-bright-rgb: 82, 196, 168;
 
   --eliter-charcoal: #2d2d2d;
   --eliter-charcoal-deep: #1a1a1a;
@@ -19,13 +18,35 @@
   --eliter-surface-warm: #fafafa;
   --eliter-white: #ffffff;
 
-  /* Compatibilidad con estilos legacy (nombres --naranja* usados por el kit anterior) */
-  --naranja: #107c10;
-  --naranja-oscuro: #0b5a0b;
-  --naranja-claro: #e8f5e9;
+  /* Legacy: mismos verdes que --eliter-* (muchos componentes usan --naranja) */
+  --naranja: #328a6c;
+  --naranja-oscuro: #1e5d48;
+  --naranja-claro: #eef8f6;
   --rojo: #be1f1f;
   --blanco: #ffffff;
   --marron: #2d2d2d;
+
+  /* Botón primario = marca (un solo origen de verdad) */
+  --eliter-btn-primary-bg: var(--eliter-green);
+  --eliter-btn-primary-hover-bg: var(--eliter-green-bright);
+  --eliter-btn-primary-active-bg: var(--eliter-green-dark);
+  --eliter-btn-primary-border: #2a7a5f;
+  --eliter-btn-primary-disabled-bg: #86b5a0;
+  --eliter-btn-primary-rgb: 50, 138, 108;
+}
+
+/* Now UI Kit trae #1a523d fijo; alineamos utilidades primarias a la paleta actual */
+.bg-primary {
+  background-color: var(--eliter-green) !important;
+}
+.text-primary,
+a.text-primary,
+a.text-primary:focus,
+a.text-primary:hover {
+  color: var(--eliter-green) !important;
+}
+.border-primary {
+  border-color: var(--eliter-green) !important;
 }
 
 /* Logo vectorial (login y otros) */
@@ -39,4 +60,87 @@
 
 .eliter-logo--compact {
   max-width: 140px;
+}
+
+/* ---------- Primario en botones (Now UI / Reactstrap) ---------- */
+.btn-primary {
+  background-color: var(--eliter-btn-primary-bg) !important;
+  border-color: var(--eliter-btn-primary-border) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--eliter-btn-primary-hover-bg) !important;
+  border-color: var(--eliter-btn-primary-hover-bg) !important;
+  color: #fff !important;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--eliter-btn-primary-active-bg) !important;
+  border-color: var(--eliter-btn-primary-active-bg) !important;
+  color: #fff !important;
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled,
+.btn-primary[disabled],
+fieldset[disabled] .btn-primary {
+  background-color: var(--eliter-btn-primary-disabled-bg) !important;
+  border-color: var(--eliter-btn-primary-disabled-bg) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  opacity: 0.85;
+}
+
+.btn-primary.btn-simple {
+  color: var(--eliter-btn-primary-bg) !important;
+  border-color: var(--eliter-btn-primary-bg) !important;
+  background-color: transparent !important;
+}
+
+.btn-primary.btn-simple:hover,
+.btn-primary.btn-simple:focus,
+.btn-primary.btn-simple:not(:disabled):not(.disabled):active,
+.btn-primary.btn-simple:not(:disabled):not(.disabled).active {
+  color: var(--eliter-btn-primary-hover-bg) !important;
+  border-color: var(--eliter-btn-primary-hover-bg) !important;
+  background-color: transparent !important;
+}
+
+.btn-primary.btn-link {
+  color: var(--eliter-btn-primary-bg) !important;
+}
+
+.btn-primary.btn-link:hover,
+.btn-primary.btn-link:focus,
+.btn-primary.btn-link:not(:disabled):not(.disabled):active {
+  color: var(--eliter-btn-primary-hover-bg) !important;
+}
+
+.btn-outline-primary {
+  color: var(--eliter-btn-primary-bg) !important;
+  border-color: var(--eliter-btn-primary-bg) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-primary.dropdown-toggle {
+  color: #fff !important;
+  background-color: var(--eliter-btn-primary-bg) !important;
+  border-color: var(--eliter-btn-primary-bg) !important;
+}
+
+.btn-neutral.btn-primary {
+  color: var(--eliter-btn-primary-bg) !important;
+}
+
+.btn-neutral.btn-primary:hover,
+.btn-neutral.btn-primary:focus,
+.btn-neutral.btn-primary:active {
+  color: var(--eliter-btn-primary-hover-bg) !important;
 }

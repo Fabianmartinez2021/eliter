@@ -37,9 +37,9 @@ function SummaryTableCollapsible({ data, darkMode }) {
 	const sellUsd = usdFromRow(data, 'totalSell');
 	const sumUsd = usdFromRow(data, 'totalSumation');
 	const isOk = boxUsd != null && amtUsd != null && (boxUsd - amtUsd) >= 0;
-	const summaryHeaderBg = darkMode ? (isOk ? 'rgba(46, 125, 50, 0.35)' : 'rgba(198, 40, 40, 0.35)') : (isOk ? 'rgba(46, 125, 50, 0.12)' : 'rgba(198, 40, 40, 0.12)');
-	const summaryRowBg = darkMode ? (isOk ? 'rgba(46, 125, 50, 0.15)' : 'rgba(198, 40, 40, 0.15)') : (isOk ? 'rgba(46, 125, 50, 0.08)' : 'rgba(198, 40, 40, 0.08)');
-	const borderColor = darkMode ? (isOk ? '#2e7d32' : '#c62828') : (isOk ? '#81c784' : '#e57373');
+	const summaryHeaderBg = darkMode ? (isOk ? 'rgba(26, 82, 61, 0.35)' : 'rgba(198, 40, 40, 0.35)') : (isOk ? 'rgba(26, 82, 61, 0.12)' : 'rgba(198, 40, 40, 0.12)');
+	const summaryRowBg = darkMode ? (isOk ? 'rgba(26, 82, 61, 0.15)' : 'rgba(198, 40, 40, 0.15)') : (isOk ? 'rgba(26, 82, 61, 0.08)' : 'rgba(198, 40, 40, 0.08)');
+	const borderColor = darkMode ? (isOk ? '#328a6c' : '#c62828') : (isOk ? '#8fbcab' : '#e57373');
 	const rows = data ? [
 		{ label: 'Total de abonos (USD)', value: sumUsd != null ? formatUsd(sumUsd) : '0.00', fmt: true },
 		{ label: 'Monto vendido (USD)', value: sellUsd != null ? formatUsd(sellUsd) : '0.00', fmt: true },

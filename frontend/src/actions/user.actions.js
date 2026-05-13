@@ -7,9 +7,23 @@ import { history } from '../helpers';
 export const userActions = {
     login(username, password) {
         return dispatch => {
-            dispatch(request({ username }));
-    
-            userService.login(username, password)
+            const u = (username || '').trim();
+            if (!u) {
+                const msg = 'Ingrese su nombre de usuario.';
+                dispatch(failure(msg));
+                dispatch(alertActions.error(msg));
+                return;
+            }
+            if (u.includes('@')) {
+                const msg = 'El acceso es solo con nombre de usuario, no con correo electrónico.';
+                dispatch(failure(msg));
+                dispatch(alertActions.error(msg));
+                return;
+            }
+
+            dispatch(request({ username: u }));
+
+            userService.login(u, password)
                 .then(
                     user => {
                         dispatch(success(user.user));
@@ -99,11 +113,6 @@ export const userActions = {
                     user => {
                         dispatch(success(user));
                         dispatch(alertActions.success(successMessage));
-                        if (successMessage === 'Correo enviado' && typeof localStorage !== 'undefined') {
-                            const count = parseInt(localStorage.getItem('verificationEmailSendCount') || '0', 10) + 1;
-                            localStorage.setItem('verificationEmailSendCount', String(count));
-                            localStorage.setItem('lastVerificationEmailSentAt', String(Date.now()));
-                        }
                         if (user && user.id) {
                             const currentUser = getState()?.authentication?.user;
                             const mergedUser = currentUser ? { ...currentUser, ...user } : user;

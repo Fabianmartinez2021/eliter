@@ -19,7 +19,7 @@ function EliterLogo({ className = '', title = 'Eliter' }) {
         <path id="eliter-logo-arc" d="M 28 66 Q 150 24 272 66" fill="none" />
       </defs>
       <text
-        fill="#22c55e"
+        fill="#328a6c"
         fontFamily='system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
         fontWeight="800"
         fontSize="36"

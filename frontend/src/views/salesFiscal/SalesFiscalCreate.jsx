@@ -1494,7 +1494,7 @@ function SalesFiscalCreatePage() {
                                                     </InputGroup>
                                                     {!canUseCoupon && total > 0 && <div className="small mt-1" style={{ color: '#6c757d' }}>Disponible en compras de $10 o más</div>}
                                                     {couponError && <div className="small mt-1" style={{ color: '#c62828' }}>{couponError}</div>}
-                                                    {couponValid && !couponError && <div className="small mt-1" style={{ color: '#2e7d32', fontWeight: 500 }}>✓ Cupón válido — 5% de descuento aplicado</div>}
+                                                    {couponValid && !couponError && <div className="small mt-1" style={{ color: 'var(--eliter-green, #328a6c)', fontWeight: 500 }}>✓ Cupón válido — 5% de descuento aplicado</div>}
                                                 </div>
                                             </FormGroup>
                                         </Col>

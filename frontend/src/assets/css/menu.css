@@ -71,7 +71,7 @@ body {
 }
 
 .sidebar-brand-accent {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
     font-weight: 700;
 }
 
@@ -160,17 +160,17 @@ body {
 
 .menu-title[aria-expanded="true"] .parent-item {
     background: rgba(var(--eliter-green-rgb), 0.11);
-    border-left-color: var(--naranja, #107c10);
+    border-left-color: var(--naranja, #328a6c);
 }
 
 .menu-title:hover .icon-menu .icon,
 .menu-title[aria-expanded="true"] .icon-menu .icon {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
 }
 
 .menu-title:hover .angle-menu,
 .menu-title[aria-expanded="true"] .angle-menu {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
 }
 
 .icon-menu {
@@ -238,6 +238,29 @@ body {
     margin-right: 6px;
 }
 
+.menu-subgroup-heading {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(61, 51, 45, 0.5);
+    padding: 10px 8px 4px 12px;
+    margin-top: 2px;
+    border-top: 1px solid rgba(var(--eliter-charcoal-rgb), 0.08);
+}
+
+.menu-subgroup-heading:first-child {
+    margin-top: 0;
+    padding-top: 4px;
+    border-top: none;
+}
+
+.menu-subgroup-heading-dark,
+.dark-mode .menu-subgroup-heading {
+    color: rgba(255, 255, 255, 0.42);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
 .child-item {
     border: none;
     border-radius: 6px;
@@ -261,7 +284,7 @@ body {
 }
 
 .child-item:hover .icon {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
 }
 
 .child-item .text-menu .text {
@@ -276,7 +299,7 @@ body {
 
 .item-active .child-item {
     background: rgba(var(--eliter-green-rgb), 0.14);
-    border-left-color: var(--naranja, #107c10);
+    border-left-color: var(--naranja, #328a6c);
 }
 
 .item-active .child-item .text-menu .text {
@@ -285,7 +308,7 @@ body {
 }
 
 .item-active .child-item .icon-menu .icon {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
 }
 
 @media (min-width: 768px) {
@@ -345,7 +368,7 @@ body {
 }
 
 .dark-mode #sidebar-wrapper .sidebar-brand-accent {
-    color: var(--naranja, #107c10);
+    color: var(--naranja, #328a6c);
 }
 
 .dark-mode #sidebar-wrapper .menu-title:hover .parent-item {
@@ -400,7 +423,7 @@ body {
 
 .dark-mode #sidebar-wrapper .menu-title:hover .icon-menu .icon,
 .dark-mode #sidebar-wrapper .menu-title[aria-expanded="true"] .icon-menu .icon {
-    color: var(--naranja, #107c10) !important;
+    color: var(--naranja, #328a6c) !important;
 }
 
 .dark-mode #sidebar-wrapper .angle-menu {
@@ -409,5 +432,5 @@ body {
 
 .dark-mode #sidebar-wrapper .menu-title:hover .angle-menu,
 .dark-mode #sidebar-wrapper .menu-title[aria-expanded="true"] .angle-menu {
-    color: var(--naranja, #107c10) !important;
+    color: var(--naranja, #328a6c) !important;
 }

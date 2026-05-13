@@ -196,30 +196,6 @@ function ProfilePage() {
                                                         </FormGroup>
                                                         </Col>
                                                     </Row>
-                                                    <Row form>
-                                                        <Col md={6}>
-                                                        <FormGroup>
-                                                            <Label for="email">Correo (opcional)</Label>
-                                                            <input
-                                                                maxLength="150"
-                                                                autoComplete="email"
-                                                                type="email"
-                                                                className={'form-control' + (errors.email ? ' is-invalid' : '')}
-                                                                name="email"
-                                                                ref={register({
-                                                                    pattern: {
-                                                                        value: /^([^\s@]+@[^\s@]+\.[^\s@]+)?$/,
-                                                                        message: 'El correo no tiene un formato válido'
-                                                                    }
-                                                                })}
-                                                                placeholder="ejemplo@correo.com"
-                                                                defaultValue={user.email}
-                                                            />
-                                                            {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
-                                                            <small className="text-muted d-block mt-1">Opcional. Solo para referencia o contacto interno.</small>
-                                                        </FormGroup>
-                                                        </Col>
-                                                    </Row>
                                                     <Button color="primary" disabled={updating}>
                                                         {updating && <span className="spinner-border spinner-border-sm mr-1"></span>}
                                                         Actualizar

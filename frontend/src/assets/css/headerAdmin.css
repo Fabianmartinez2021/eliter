@@ -5,7 +5,7 @@
     background-color: #252525 !important;
     background-image:
         radial-gradient(ellipse 100% 90% at 100% 0%, rgba(var(--eliter-green-rgb), 0.22) 0%, transparent 52%),
-        linear-gradient(118deg, #2d2d2d 0%, #2a2a2a 40%, #1e4a1e 78%, #107c10 100%) !important;
+        linear-gradient(118deg, #2d2d2d 0%, #2a2a2a 40%, #1e4d3c 78%, #328a6c 100%) !important;
     background-size: auto, auto !important;
     background-repeat: no-repeat !important;
     border: none !important;
@@ -497,7 +497,7 @@
     justify-content: center;
     font-size: 0.7rem;
     font-weight: 700;
-    background: #22c55e;
+    background: var(--eliter-green-bright);
     color: #fff;
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);

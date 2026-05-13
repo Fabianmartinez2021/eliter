@@ -86,12 +86,6 @@ function UsersListPage() {
 			sortable: true,
         },
 		{
-			name: 'Email',
-			selector: 'email',
-			sortable: true,
-			cell: (row) => row.email ? row.email : '—',
-		},
-		{
 			name: 'Sucursal',
 			selector: 'agency.name',
 			sortable: true,
@@ -159,7 +153,6 @@ function UsersListPage() {
 						|| (item.username &&  item.username.toLowerCase().includes(filterText.toLowerCase()))
 						|| (item.firstName &&  item.firstName.toLowerCase().includes(filterText.toLowerCase()))
 						|| (item.lastName &&  item.lastName.toLowerCase().includes(filterText.toLowerCase()))
-						|| (item.email && item.email.toLowerCase().includes(filterText.toLowerCase()))
 						|| (item.agency && item.agency.name && item.agency.name.toLowerCase().includes(filterText.toLowerCase()))
 						|| (item.profile &&  item.profile.toLowerCase().includes(filterText.toLowerCase()))
 					) 

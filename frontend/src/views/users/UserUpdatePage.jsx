@@ -238,30 +238,6 @@ function UserUpdatePage() {
                                     <Row form>
                                         <Col md={6}>
                                         <FormGroup>
-                                            <Label for="email">Correo (opcional)</Label>
-                                            <input
-                                                maxLength="150"
-                                                autoComplete="email"
-                                                type="email"
-                                                className={'form-control' + (errors.email ? ' is-invalid' : '')}
-                                                name="email"
-                                                ref={register({
-                                                    pattern: {
-                                                        value: /^([^\s@]+@[^\s@]+\.[^\s@]+)?$/,
-                                                        message: 'El correo no tiene un formato válido'
-                                                    }
-                                                })}
-                                                placeholder="ejemplo@correo.com"
-                                                defaultValue={user.email}
-                                            />
-                                            {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
-                                            <small className="text-muted">Opcional. Solo para referencia o contacto interno.</small>
-                                        </FormGroup>
-                                        </Col>
-                                    </Row>
-                                    <Row form>
-                                        <Col md={6}>
-                                        <FormGroup>
                                             <Label for="role">Rol</Label>{' '}
                                             <select className={'form-control' + (errors.rol ? ' is-invalid' : '')} name="role"
                                                 ref={register({ 
