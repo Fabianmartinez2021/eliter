@@ -34,8 +34,224 @@ const PaymentMethodsGeneralReportRecord = db.PaymentMethodsGeneralReportRecord;
 const PromoCoupon = db.PromoCoupon;
 const PromoCouponUse = db.PromoCouponUse;
 const { normalizeCouponCode } = require("../_helpers/promoCoupon.helper");
+const paymentMethodsUsd = require("../_helpers/paymentMethodsUsd.helper");
 
 const inventoryService = require("../services/inventory.service");
+
+/** Día calendario Venezuela (UTC−4) como YYYY-MM-DD */
+function venezuelaCalendarDayKey(d) {
+  return moment(d).utc().subtract(4, "hours").format("YYYY-MM-DD");
+}
+
+function isSameVenezuelaCalendarDayAsNow(date) {
+  if (!date) return false;
+  return venezuelaCalendarDayKey(date) === venezuelaCalendarDayKey(moment().toDate());
+}
+
+function getVenezuelaDayBoundsForDate(date) {
+  const start = moment(date).utc().subtract(4, "hours").startOf("day").toDate();
+  const end = moment(date).utc().subtract(4, "hours").endOf("day").toDate();
+  return { start, end };
+}
+
+/**
+ * Recalcula totalBefore/total de todos los movimientos de caja de una moneda
+ * en el día calendario Venezuela de dateRef (corrige cadena tras borrar/editar).
+ */
+async function recomputeBoxTotalsForAgencyCoinForVenezuelaDay(agencyId, coin, dateRef) {
+  const { start, end } = getVenezuelaDayBoundsForDate(dateRef);
+  const before = await Box.findOne({
+    agency: agencyId,
+    coin,
+    createdDate: { $lt: start },
+  }).sort({ createdDate: -1 });
+  let running = before
+    ? parseFloat(String(before.total).replace(/,/g, "")) || 0
+    : 0;
+  const rows = await Box.find({
+    agency: agencyId,
+    coin,
+    createdDate: { $gte: start, $lte: end },
+  }).sort({ createdDate: 1 });
+  for (const row of rows) {
+    const tin = parseFloat(String(row.in || 0).toString().replace(/,/g, "")) || 0;
+    const tout = parseFloat(String(row.out || 0).toString().replace(/,/g, "")) || 0;
+    row.totalBefore = running.toFixed(2);
+    running = running + tin - tout;
+    row.total = running.toFixed(2);
+    await row.save();
+  }
+}
+
+async function recomputeBoxTotalsForAgencyAllCoinsForSaleDay(agencyId, dateRef) {
+  for (let c = 1; c <= 4; c++) {
+    await recomputeBoxTotalsForAgencyCoinForVenezuelaDay(agencyId, c, dateRef);
+  }
+}
+
+/** Igual que en create: el egreso por cambio no puede dejar la caja negativa. */
+async function assertChangeDataFeasibleOnBox(agency, salesParam) {
+  if (!salesParam.changeData) return;
+  const coin = salesParam.changeData.typeChange;
+  const value = salesParam.changeData.changeAmmount;
+  const ammount = parseFloat(String(value).replace(/,/g, ""));
+  const lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+  if (lastRecord) {
+    const totalOut =
+      parseFloat(String(lastRecord.total).replace(/,/g, "")) - ammount;
+    if (Math.sign(totalOut) === -1) {
+      throw "El monto ingresado de cambio supera el total en caja, verifique e intente nuevamente";
+    }
+  }
+}
+
+function applyPaymentPatchToTarget(target, paymentPatch) {
+  const applyNum = (field) => {
+    if (paymentPatch[field] === undefined) return;
+    const v = paymentPatch[field];
+    if (v === "" || v === null) {
+      target[field] = field === "changeData" ? undefined : 0;
+      return;
+    }
+    if (field === "changeData") {
+      target.changeData = v;
+      return;
+    }
+    target[field] = parseFloat(String(v).replace(/,/g, ""));
+  };
+  applyNum("ves");
+  applyNum("dollar");
+  applyNum("eur");
+  applyNum("cop");
+  applyNum("tAmmount");
+  applyNum("pAmmount");
+  applyNum("pAmmountExtra");
+  applyNum("total");
+  applyNum("valueDollar");
+  applyNum("valueEur");
+  applyNum("valueCop");
+  applyNum("changeData");
+}
+
+/** Registra movimientos de caja de una venta ya guardada (misma lógica que create). */
+async function appendBoxEntriesForSaleOrder({ agency, user, order, salesParam }) {
+  const ord = order;
+
+  if (salesParam.ves !== "" && salesParam.ves > 0) {
+    const coin = 1;
+    let lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+    if (lastRecord) {
+      let totalVes = parseFloat(lastRecord.total) + parseFloat(salesParam.ves);
+      const saleBox = new Box({
+        agency,
+        user,
+        totalBefore: lastRecord.total,
+        in: salesParam.ves.toFixed(2),
+        out: 0,
+        total: totalVes.toFixed(2),
+        coin,
+        coinDescription: enumBox.descriptionCoin[coin],
+        type: enumBox.types.sale,
+        order: ord,
+        typeDescription: enumBox.descriptionType[enumBox.types.sale],
+      });
+      await saleBox.save();
+    }
+  }
+  if (salesParam.dollar !== "" && salesParam.dollar > 0) {
+    const coin = 2;
+    let lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+    if (lastRecord) {
+      let totalDollar = parseFloat(lastRecord.total) + parseFloat(salesParam.dollar);
+      const saleBox = new Box({
+        agency,
+        user,
+        totalBefore: lastRecord.total,
+        in: salesParam.dollar.toFixed(2),
+        out: 0,
+        total: totalDollar.toFixed(2),
+        coin,
+        valueDollar: salesParam.valueDollar,
+        coinDescription: enumBox.descriptionCoin[coin],
+        type: enumBox.types.sale,
+        order: ord,
+        typeDescription: enumBox.descriptionType[enumBox.types.sale],
+      });
+      await saleBox.save();
+    }
+  }
+  if (salesParam.eur !== "" && salesParam.eur > 0) {
+    const coin = 3;
+    let lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+    if (lastRecord) {
+      let totalEur = parseFloat(lastRecord.total) + parseFloat(salesParam.eur);
+      const saleBox = new Box({
+        agency,
+        user,
+        totalBefore: lastRecord.total,
+        in: salesParam.eur.toFixed(2),
+        out: 0,
+        total: totalEur.toFixed(2),
+        coin,
+        valueEur: salesParam.valueEur,
+        coinDescription: enumBox.descriptionCoin[coin],
+        type: enumBox.types.sale,
+        order: ord,
+        typeDescription: enumBox.descriptionType[enumBox.types.sale],
+      });
+      await saleBox.save();
+    }
+  }
+  if (salesParam.cop !== "" && salesParam.cop > 0) {
+    const coin = 4;
+    let lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+    if (lastRecord) {
+      let totalCop = parseFloat(lastRecord.total) + parseFloat(salesParam.cop);
+      const saleBox = new Box({
+        agency,
+        user,
+        totalBefore: lastRecord.total,
+        in: salesParam.cop.toFixed(2),
+        out: 0,
+        total: totalCop.toFixed(2),
+        coin,
+        valueCop: salesParam.valueCop,
+        coinDescription: enumBox.descriptionCoin[coin],
+        type: enumBox.types.sale,
+        order: ord,
+        typeDescription: enumBox.descriptionType[enumBox.types.sale],
+      });
+      await saleBox.save();
+    }
+  }
+  if (salesParam.changeData) {
+    let coin = salesParam.changeData.typeChange;
+    let value = salesParam.changeData.changeAmmount;
+    let amount = parseFloat(value.toString().replace(/,/g, ""));
+    let lastRecord = await Box.findOne({ agency, coin }).sort({ createdDate: -1 });
+    if (lastRecord) {
+      let totalOut = parseFloat(lastRecord.total) - amount;
+      let boxData = {
+        agency,
+        user,
+        totalBefore: lastRecord.total,
+        in: 0,
+        out: amount,
+        total: totalOut.toFixed(2),
+        coin,
+        coinDescription: enumBox.descriptionCoin[coin],
+        type: enumBox.types.change,
+        order: ord,
+        typeDescription: enumBox.descriptionType[enumBox.types.change],
+      };
+      if (coin === 1) boxData.valueDollar = salesParam.valueDollar;
+      if (coin === 2) boxData.valueEur = salesParam.valueEur;
+      if (coin === 3) boxData.valueCop = salesParam.valueCop;
+      const saleBox = new Box(boxData);
+      await saleBox.save();
+    }
+  }
+}
 
 let salesService = {
   /**
@@ -452,6 +668,8 @@ let salesService = {
         salesParam.couponDiscount = 0;
       }
 
+      salesParam.inventoryRecordIds = dataToDelete.InventoryRecord.slice();
+
       const sale = new Sales(salesParam);
 
       const saleSaved = await sale.save();
@@ -806,6 +1024,357 @@ let salesService = {
     if (!sale) throw "venta no encontrada";
 
     return sale;
+  },
+
+  /**
+   * Elimina una venta (solo admin vía controller). Revierte inventario con los mismos pasos que el rollback de create.
+   */
+  deleteSaleByAdmin: async (saleId) => {
+    const sale = await Sales.findById(saleId);
+    if (!sale) throw "venta no encontrada";
+
+    if (sale.isPayment) {
+      throw "No se puede eliminar un pago de crédito registrado como venta desde aquí.";
+    }
+    if (sale.isSumation) {
+      throw "No se puede eliminar un abono registrado como venta desde aquí.";
+    }
+
+    let creditPendingToRemove = null;
+    if (sale.isCredit) {
+      creditPendingToRemove = await PendingPayments.findOne({
+        order: sale.order,
+        agency: sale.agency,
+      });
+      if (!creditPendingToRemove) {
+        throw "No se encontró la cuenta pendiente vinculada a este crédito.";
+      }
+      if (creditPendingToRemove.status) {
+        throw "La cuenta de crédito ya está cerrada; no se puede eliminar.";
+      }
+      if (
+        creditPendingToRemove.payments &&
+        creditPendingToRemove.payments.length > 0
+      ) {
+        throw "No se puede eliminar: la cuenta tiene abonos registrados. Use cobranzas para revertir abonos antes.";
+      }
+    }
+
+    if (!Array.isArray(sale.inventoryRecordIds)) {
+      throw "Esta venta no tiene movimientos de inventario vinculados (registro anterior al sistema). No se puede eliminar de forma segura.";
+    }
+
+    for (let recordID of sale.inventoryRecordIds) {
+      const item = await InventoryRecord.findByIdAndDelete(recordID);
+      if (!item) continue;
+      const inventory = await Inventory.findOne({
+        product: item.product,
+        agency: item.agency,
+      }).populate("product");
+
+      if (inventory) {
+        const total = parseFloat(inventory.kg) + parseFloat(item.out);
+        await Inventory.findOneAndUpdate(
+          { product: item.product, agency: item.agency },
+          { kg: total }
+        );
+      }
+    }
+
+    await Box.deleteMany({
+      agency: sale.agency,
+      $or: [{ order: sale.order }, { order: String(sale.order) }],
+    });
+    await recomputeBoxTotalsForAgencyAllCoinsForSaleDay(
+      sale.agency,
+      sale.createdDate
+    );
+
+    if (sale.isWholesale) {
+      await Wholesales.findOneAndDelete({
+        order: sale.order,
+        agency: sale.agency,
+      });
+      if (
+        !sale.isCredit &&
+        sale.document &&
+        sale.valueDollar
+      ) {
+        const client = await WholesaleClient.findOne({
+          document: sale.document,
+        });
+        if (client) {
+          const delta = sale.total / sale.valueDollar;
+          client.totalSpent = (parseFloat(client.totalSpent) || 0) - delta;
+          if (client.totalSpent < 0) client.totalSpent = 0;
+          await client.save();
+        }
+      }
+    }
+
+    const couponUses = await PromoCouponUse.find({
+      saleOrder: sale.order,
+      saleFiscalOrder: null,
+    });
+    for (const u of couponUses) {
+      await PromoCoupon.findOneAndUpdate(
+        { code: u.couponCode },
+        { $set: { used: false, usedAt: null } }
+      );
+      await PromoCouponUse.deleteOne({ _id: u._id });
+    }
+
+    if (creditPendingToRemove) {
+      await PendingPayments.findByIdAndDelete(creditPendingToRemove._id);
+      await WholesaleClient.findOneAndUpdate(
+        { document: creditPendingToRemove.document },
+        { $set: { pendingPayment: {}, isSolvent: true } }
+      );
+    }
+
+    await Sales.findByIdAndDelete(sale._id);
+    return { message: "Venta eliminada" };
+  },
+
+  /**
+   * Actualización administrativa: datos de cliente / nota; y montos de caja solo el mismo día calendario Venezuela.
+   * Los productos / inventario no se alteran aquí (requiere anular la venta).
+   */
+  adminUpdateSale: async (saleId, patch) => {
+    const metaKeys = [
+      "names",
+      "businessName",
+      "document",
+      "phone",
+      "comment",
+    ];
+    const paymentKeys = [
+      "ves",
+      "dollar",
+      "eur",
+      "cop",
+      "tAmmount",
+      "pAmmount",
+      "pAmmountExtra",
+      "total",
+      "valueDollar",
+      "valueEur",
+      "valueCop",
+      "changeData",
+    ];
+
+    if (patch.items || patch.products) {
+      throw "No se pueden editar productos por esta vía; el inventario no se modifica. Anule la venta y registre de nuevo si hubo error en productos.";
+    }
+
+    const sale = await Sales.findById(saleId);
+    if (!sale) throw "venta no encontrada";
+
+    const metaUpdates = {};
+    for (const key of metaKeys) {
+      if (patch[key] !== undefined && patch[key] !== null) {
+        metaUpdates[key] = patch[key];
+      }
+    }
+
+    const paymentPatch = {};
+    for (const key of paymentKeys) {
+      if (patch[key] !== undefined) {
+        paymentPatch[key] = patch[key];
+      }
+    }
+    const hasPayment = Object.keys(paymentPatch).length > 0;
+
+    if (Object.keys(metaUpdates).length === 0 && !hasPayment) {
+      throw "Nada que actualizar";
+    }
+
+    if (hasPayment) {
+      if (!isSameVenezuelaCalendarDayAsNow(sale.createdDate)) {
+        throw "Solo se pueden ajustar montos y caja para ventas registradas el día de hoy (zona Venezuela).";
+      }
+      if (sale.isCredit) {
+        throw "No se pueden ajustar montos de ventas a crédito desde aquí; use cobranzas o anule el crédito sin abonos.";
+      }
+      const startToday = moment().utc().subtract(4, "hours").startOf("day");
+      const endToday = moment().utc().subtract(4, "hours").endOf("day");
+      const closureExists = await PaymentMethodsRecord.findOne({
+        agency: ObjectId(sale.agency),
+        date: { $gte: new Date(startToday), $lte: new Date(endToday) },
+      });
+      if (closureExists) {
+        throw "No se pueden ajustar montos: ya se realizó el cierre de forma de pago para hoy en esta sucursal.";
+      }
+    }
+
+    const prevDocument = sale.document;
+    const paymentSnapshot = hasPayment
+      ? {
+          total: sale.total,
+          valueDollar: sale.valueDollar,
+          document: sale.document,
+        }
+      : null;
+
+    Object.assign(sale, metaUpdates);
+
+    const saleForBoxRestore = hasPayment ? sale.toObject() : null;
+    if (hasPayment) {
+      const mergedForBox = sale.toObject();
+      applyPaymentPatchToTarget(mergedForBox, paymentPatch);
+      await Box.deleteMany({
+        agency: sale.agency,
+        $or: [{ order: sale.order }, { order: String(sale.order) }],
+      });
+      await recomputeBoxTotalsForAgencyAllCoinsForSaleDay(
+        sale.agency,
+        sale.createdDate
+      );
+      try {
+        await assertChangeDataFeasibleOnBox(sale.agency, mergedForBox);
+      } catch (err) {
+        await appendBoxEntriesForSaleOrder({
+          agency: sale.agency,
+          user: sale.user,
+          order: sale.order,
+          salesParam: saleForBoxRestore,
+        });
+        await recomputeBoxTotalsForAgencyAllCoinsForSaleDay(
+          sale.agency,
+          sale.createdDate
+        );
+        throw err;
+      }
+      applyPaymentPatchToTarget(sale, paymentPatch);
+      await sale.save();
+      const sp = sale.toObject();
+      await appendBoxEntriesForSaleOrder({
+        agency: sale.agency,
+        user: sale.user,
+        order: sale.order,
+        salesParam: sp,
+      });
+      await recomputeBoxTotalsForAgencyAllCoinsForSaleDay(
+        sale.agency,
+        sale.createdDate
+      );
+      if (sale.isWholesale) {
+        const wsSet = {
+          ves: sale.ves,
+          dollar: sale.dollar,
+          eur: sale.eur,
+          cop: sale.cop,
+          tAmmount: sale.tAmmount,
+          pAmmount: sale.pAmmount,
+          pAmmountExtra: sale.pAmmountExtra,
+          total: sale.total,
+          valueDollar: sale.valueDollar,
+          valueEur: sale.valueEur,
+          valueCop: sale.valueCop,
+        };
+        await Wholesales.findOneAndUpdate(
+          { order: sale.order, agency: sale.agency },
+          { $set: wsSet }
+        );
+      }
+      if (
+        sale.isWholesale &&
+        !sale.isCredit &&
+        paymentSnapshot &&
+        paymentSnapshot.valueDollar &&
+        sale.valueDollar
+      ) {
+        const oldDelta = paymentSnapshot.total / paymentSnapshot.valueDollar;
+        const newDelta = sale.total / sale.valueDollar;
+        const oldDoc = paymentSnapshot.document;
+        const newDoc = sale.document;
+        if (String(oldDoc || "") === String(newDoc || "")) {
+          const client = await WholesaleClient.findOne({ document: oldDoc });
+          if (client) {
+            client.totalSpent =
+              (parseFloat(client.totalSpent) || 0) - oldDelta + newDelta;
+            if (client.totalSpent < 0) client.totalSpent = 0;
+            await client.save();
+          }
+        } else {
+          const cOld = oldDoc
+            ? await WholesaleClient.findOne({ document: oldDoc })
+            : null;
+          if (cOld) {
+            cOld.totalSpent = (parseFloat(cOld.totalSpent) || 0) - oldDelta;
+            if (cOld.totalSpent < 0) cOld.totalSpent = 0;
+            await cOld.save();
+          }
+          if (newDoc) {
+            const cNew = await WholesaleClient.findOne({ document: newDoc });
+            if (cNew) {
+              cNew.totalSpent = (parseFloat(cNew.totalSpent) || 0) + newDelta;
+              await cNew.save();
+            }
+          }
+        }
+      }
+    } else {
+      await sale.save();
+    }
+
+    if (Object.keys(metaUpdates).length > 0) {
+      if (sale.isWholesale || sale.isCredit) {
+        const wholesaleSubset = {};
+        if (metaUpdates.names !== undefined) wholesaleSubset.names = metaUpdates.names;
+        if (metaUpdates.document !== undefined)
+          wholesaleSubset.document = metaUpdates.document;
+        if (metaUpdates.phone !== undefined) wholesaleSubset.phone = metaUpdates.phone;
+        if (metaUpdates.comment !== undefined)
+          wholesaleSubset.comment = metaUpdates.comment;
+        if (Object.keys(wholesaleSubset).length > 0) {
+          await Wholesales.findOneAndUpdate(
+            { order: sale.order, agency: sale.agency },
+            { $set: wholesaleSubset }
+          );
+        }
+        const wc = await WholesaleClient.findOne({ document: prevDocument });
+        if (wc) {
+          if (metaUpdates.names !== undefined) wc.names = metaUpdates.names;
+          if (metaUpdates.businessName !== undefined)
+            wc.businessName = metaUpdates.businessName;
+          if (metaUpdates.phone !== undefined) wc.phone = metaUpdates.phone;
+          if (metaUpdates.document !== undefined) wc.document = metaUpdates.document;
+          if (metaUpdates.comment !== undefined) wc.comment = metaUpdates.comment;
+          if (wc.pendingPayment && wc.pendingPayment.order === sale.order) {
+            if (metaUpdates.names !== undefined) wc.pendingPayment.names = metaUpdates.names;
+            if (metaUpdates.businessName !== undefined) {
+              wc.pendingPayment.businessName = metaUpdates.businessName;
+            }
+            if (metaUpdates.phone !== undefined) wc.pendingPayment.phone = metaUpdates.phone;
+            if (metaUpdates.document !== undefined) {
+              wc.pendingPayment.document = metaUpdates.document;
+            }
+            if (metaUpdates.comment !== undefined)
+              wc.pendingPayment.comment = metaUpdates.comment;
+            wc.markModified("pendingPayment");
+          }
+          await wc.save();
+        }
+        if (sale.isCredit) {
+          await PendingPayments.findOneAndUpdate(
+            { order: sale.order, agency: sale.agency },
+            { $set: metaUpdates }
+          );
+        }
+      } else {
+        const client = await Client.findOne({ document: prevDocument });
+        if (client) {
+          if (metaUpdates.names !== undefined) client.names = metaUpdates.names;
+          if (metaUpdates.phone !== undefined) client.phone = metaUpdates.phone;
+          if (metaUpdates.document !== undefined)
+            client.document = metaUpdates.document;
+          await client.save();
+        }
+      }
+    }
+
+    return await Sales.findById(saleId);
   },
 
   /**
@@ -2943,8 +3512,9 @@ let salesService = {
       salesArray = sales;
       boxArray = box;
     } else {
-      salesArray = sales[0].data;
-      boxArray = box[0].data;
+      salesArray =
+        sales[0] && Array.isArray(sales[0].data) ? sales[0].data : [];
+      boxArray = box[0] && Array.isArray(box[0].data) ? box[0].data : [];
     }
 
     //  Se actualiza el valor de las monedas, restando el valor de las salidas mediante vuelto
@@ -3155,12 +3725,28 @@ let salesService = {
     }
 
     if (!salesParam.isExcel && salesParam.filters.mixData) {
-      sales[0].metadata[0].total = salesArray.length;
+      if (sales[0] && sales[0].metadata && sales[0].metadata[0]) {
+        sales[0].metadata[0].total = salesArray.length;
+      }
+    }
+
+    const reportResults = !salesParam.isExcel
+      ? sales[0] && Array.isArray(sales[0].data)
+        ? sales[0].data
+        : []
+      : sales;
+    if (Array.isArray(reportResults)) {
+      reportResults.forEach((row) =>
+        paymentMethodsUsd.addDisplayUsdToDailySalesReportRow(row)
+      );
     }
 
     return {
-      results: !salesParam.isExcel ? sales[0].data : sales,
-      metadata: !salesParam.isExcel ? sales[0].metadata : [],
+      results: reportResults,
+      metadata:
+        !salesParam.isExcel && sales[0] && sales[0].metadata
+          ? sales[0].metadata
+          : [],
       total,
     };
   },
@@ -3407,6 +3993,8 @@ let salesService = {
 
     salesParam.differential =
       salesParam.total - salesParam.virtualValues.totalAmountBox;
+
+    paymentMethodsUsd.addDisplayUsdToPaymentMethodsRecord(salesParam);
 
     // Si ya hay un reporte, se actualiza, mientras que de lo contrario se crea uno nuevo y luego se envia el resultado
 
@@ -4102,15 +4690,23 @@ let salesService = {
       );
     });
 
-    return {
+    const storeFacet = newPaymentMethodsRecordStoreReport[0];
+    const historyPayload = {
       resultsStores: !salesParam.isExcel
-        ? newPaymentMethodsRecordStoreReport[0].data
+        ? storeFacet && Array.isArray(storeFacet.data)
+          ? storeFacet.data
+          : []
         : newPaymentMethodsRecordStoreReport,
-      metadata: !salesParam.isExcel
-        ? newPaymentMethodsRecordStoreReport[0].metadata
+      metadata:
+        !salesParam.isExcel && storeFacet && storeFacet.metadata
+          ? storeFacet.metadata
+          : [],
+      resultsGeneral: Array.isArray(newPaymentMethodsRecordGeneralReport)
+        ? newPaymentMethodsRecordGeneralReport
         : [],
-      resultsGeneral: newPaymentMethodsRecordGeneralReport,
     };
+    paymentMethodsUsd.enrichPaymentMethodsHistoryResponse(historyPayload);
+    return historyPayload;
   },
 
   reportPaymentMethodsChart: async (salesParam) => {
@@ -5155,14 +5751,20 @@ let salesService = {
     //  Si son los detalles de los créditos, se devuelve de una vez
     if (type === 6) {
       let total = 0;
+      let totalUsd = 0;
 
       sales.forEach((sale) => {
         total += sale.total;
+        const vd = paymentMethodsUsd.num(sale.valueDollar);
+        const u = vd > 0 ? paymentMethodsUsd.num(sale.total) / vd : 0;
+        totalUsd += u;
+        sale.subTotalUsd = u;
       });
 
       return {
         results: sales,
         total,
+        totalUsd,
       };
     }
     /********************************** */
@@ -5299,9 +5901,36 @@ let salesService = {
       return b.createdDate - a.createdDate;
     });
 
+    let totalUsd = 0;
+    salesAndChanges.forEach((row) => {
+      const vd = paymentMethodsUsd.num(row.valueDollar);
+      const st = paymentMethodsUsd.num(row.subTotal);
+      if (type === 1) {
+        row.subTotalUsd = paymentMethodsUsd.num(row.dollar);
+      } else if (type === 2) {
+        const ve = paymentMethodsUsd.num(row.valueEur);
+        row.subTotalUsd =
+          vd > 0 && ve > 0
+            ? (paymentMethodsUsd.num(row.eur) * ve) / vd
+            : 0;
+      } else if (type === 3) {
+        const vc = paymentMethodsUsd.num(row.valueCop);
+        row.subTotalUsd =
+          vd > 0 && vc > 0
+            ? paymentMethodsUsd.num(row.cop) / vc / vd
+            : 0;
+      } else if (type === 7) {
+        row.subTotalUsd = vd > 0 ? paymentMethodsUsd.num(row.ves) / vd : 0;
+      } else {
+        row.subTotalUsd = vd > 0 ? st / vd : 0;
+      }
+      totalUsd += row.subTotalUsd;
+    });
+
     return {
       results: salesAndChanges,
       total,
+      totalUsd,
     };
   },
 
@@ -6726,6 +7355,7 @@ let salesService = {
     try {
       //Recorrer ventas
       for (let salesParam of offlineParam.items) {
+        const inventoryRecordsStartIndex = dataToDelete.InventoryRecord.length;
         // Debido al problema de recarga de página, se verifica que no haya una venta con la misma agencia y fecha, ya que de lo contrario no se procesa
         const registeredSale = await Sales.findOne({
           agency: ObjectId(salesParam.agency),
@@ -7031,6 +7661,10 @@ let salesService = {
           salesParam.couponCode = '';
           salesParam.couponDiscount = 0;
         }
+
+        salesParam.inventoryRecordIds = dataToDelete.InventoryRecord.slice(
+          inventoryRecordsStartIndex
+        );
 
         const sale = new Sales(salesParam);
 

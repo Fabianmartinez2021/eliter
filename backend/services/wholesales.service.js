@@ -85,6 +85,7 @@ let salesService = {
         let totalDifferential = 0;
 
         let products = []
+        const inventoryRecordIds = [];
        //Crear array de productos vendidos
         for (let item of salesParam.items) {
             
@@ -135,7 +136,8 @@ let salesService = {
                 inventoryParam.type = enumOut.out.sale;
 
                 const record = new InventoryRecord(inventoryParam);
-                await record.save();
+                const recordSaved = await record.save();
+                inventoryRecordIds.push(recordSaved._id);
 
                 //Actualizar total en inventario
                 await Inventory.findOneAndUpdate({ product:item.id, agency:salesParam.agency }, { kg:total });
@@ -168,7 +170,8 @@ let salesService = {
                         decreaseParam.type = typeOut;
 
                         const recordDecrease = new InventoryRecord(decreaseParam);
-                        await recordDecrease.save();
+                        const recordDecreaseSaved = await recordDecrease.save();
+                        inventoryRecordIds.push(recordDecreaseSaved._id);
 
                         //Actualizar total en inventario
                         await Inventory.findOneAndUpdate({ product:item.id, agency:salesParam.agency }, { kg:totalDecrease });
@@ -210,7 +213,8 @@ let salesService = {
                 inventoryRecordParam.type = enumOut.out.sale;
                 
                 const record = new InventoryRecord(inventoryRecordParam);
-                await record.save();
+                const recordSaved = await record.save();
+                inventoryRecordIds.push(recordSaved._id);
 
                 //Obtener producto para saber si tiene merma por empaque
                 let product = await Product.findOne({ _id:item.id });
@@ -241,7 +245,8 @@ let salesService = {
                         decreaseParam.type = typeOut;
 
                         const recordDecrease = new InventoryRecord(decreaseParam);
-                        await recordDecrease.save();
+                        const recordDecreaseSaved = await recordDecrease.save();
+                        inventoryRecordIds.push(recordDecreaseSaved._id);
 
                         //Actualizar total en inventario
                         await Inventory.findOneAndUpdate({ product:item.id, agency:salesParam.agency }, { kg:totalDecrease });
@@ -266,6 +271,7 @@ let salesService = {
 
         //  Se almacena el diferencial total
         salesParam.differential = totalDifferential;
+        salesParam.inventoryRecordIds = inventoryRecordIds;
         
         const sale = new Sales(salesParam);
 

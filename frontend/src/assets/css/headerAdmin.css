@@ -1,17 +1,16 @@
-/* ——— Cabecera admin: tema Orquesta Cafè (sin imagen de carnes / marca antigua) ——— */
+/* ——— Cabecera admin: marca Eliter (carbón + verde) ——— */
 .headerAdmin {
     position: relative;
     z-index: 1020;
-    background-color: #2c1810 !important;
+    background-color: #252525 !important;
     background-image:
-        radial-gradient(ellipse 120% 80% at 100% 0%, rgba(255, 107, 0, 0.14) 0%, transparent 55%),
-        radial-gradient(ellipse 90% 70% at 0% 100%, rgba(139, 90, 60, 0.35) 0%, transparent 50%),
-        linear-gradient(115deg, #241510 0%, #3d261c 42%, #4a3328 72%, #2a1a14 100%) !important;
-    background-size: auto, auto, auto !important;
+        radial-gradient(ellipse 100% 90% at 100% 0%, rgba(var(--eliter-green-rgb), 0.22) 0%, transparent 52%),
+        linear-gradient(118deg, #2d2d2d 0%, #2a2a2a 40%, #1e4a1e 78%, #107c10 100%) !important;
+    background-size: auto, auto !important;
     background-repeat: no-repeat !important;
     border: none !important;
-    border-bottom: 1px solid rgba(255, 107, 0, 0.22) !important;
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+    border-bottom: 1px solid rgba(var(--eliter-green-rgb), 0.28) !important;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
@@ -23,17 +22,17 @@
     right: 0;
     bottom: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.45), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--eliter-green-bright-rgb), 0.55), transparent);
     pointer-events: none;
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 .headerAdmin--deep {
     background-image:
-        radial-gradient(ellipse 100% 80% at 90% 0%, rgba(255, 107, 0, 0.1) 0%, transparent 50%),
-        linear-gradient(115deg, #15100e 0%, #1f1612 45%, #181210 100%) !important;
-    border-bottom-color: rgba(255, 107, 0, 0.18) !important;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+        radial-gradient(ellipse 90% 80% at 95% 0%, rgba(var(--eliter-green-rgb), 0.12) 0%, transparent 48%),
+        linear-gradient(118deg, #1a1a1a 0%, #222 48%, #141414 100%) !important;
+    border-bottom-color: rgba(var(--eliter-green-rgb), 0.2) !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
 }
 
 .headerAdmin-inner {
@@ -79,7 +78,7 @@
 }
 
 .headerAdmin-app {
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -94,7 +93,7 @@
     height: 2px;
     margin-top: 3px;
     border-radius: 2px;
-    background: linear-gradient(90deg, var(--naranja, #FF6B00), rgba(255, 107, 0, 0.2));
+    background: linear-gradient(90deg, var(--eliter-green-bright), rgba(var(--eliter-green-bright-rgb), 0.25));
 }
 
 .headerAdmin-sucursal {
@@ -498,7 +497,7 @@
     justify-content: center;
     font-size: 0.7rem;
     font-weight: 700;
-    background: #ff8c00;
+    background: #22c55e;
     color: #fff;
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
@@ -506,7 +505,7 @@
 }
 
 .notification-bell-badge:hover {
-    box-shadow: 0 3px 10px rgba(255,140,0,0.4);
+    box-shadow: 0 3px 10px rgba(var(--eliter-green-rgb), 0.35);
 }
 
 /* Responsive: compañía/agencia visible en modo teléfono */

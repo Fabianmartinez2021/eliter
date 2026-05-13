@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Eliter">
+  <rect width="512" height="512" rx="96" fill="#2d2d2d"/>
+  <path d="M0 340 L512 180 L512 340 L0 512 Z" fill="#107c10"/>
+  <path d="M0 200 L512 40 L512 200 L0 360 Z" fill="#22c55e" opacity="0.35"/>
+</svg>

@@ -36,6 +36,25 @@ export const pendingPaymentsService = {
         return handleResponse(response);
     },
 
+    pendingPaymentsAdminUpdate: async (id, body) => {
+        const requestOptions = {
+            method: 'PUT',
+            headers: { ...authHeader(), 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        };
+        const response = await fetch(`${apiUrl}/pending-payments/admin-update-pending/${id}`, requestOptions);
+        return handleResponse(response);
+    },
+
+    pendingPaymentsAdminDeleteUnpaid: async (id) => {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        };
+        const response = await fetch(`${apiUrl}/pending-payments/admin-delete-unpaid-pending/${id}`, requestOptions);
+        return handleResponse(response);
+    },
+
 
 }
 

@@ -1,4 +1,5 @@
 /* eslint-disable */
+import './assets/css/eliter-brand.css';
 import './assets/css/styles.css';
 import './assets/css/responsive.css';
 import './assets/css/headerAdmin.css';

@@ -17,7 +17,7 @@ function DefaultFooter() {
                 <a
                   target="_blank"
                 >
-                  OrquestaCafè
+                  Eliter
                 </a>
               </li>
               <li>
@@ -41,7 +41,7 @@ function DefaultFooter() {
             <a
               href="#"
             >
-              OrquestaCafè
+              Eliter
             </a>
             .
           </div>

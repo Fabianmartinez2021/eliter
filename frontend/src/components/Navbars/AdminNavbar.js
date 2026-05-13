@@ -41,7 +41,7 @@ const ROLE_LABELS = {
   [Role.AuditorGeneral]: "Auditor general",
 };
 
-const headerIconColor = "#f8f1eb";
+const headerIconColor = "#e8fce8";
 
 function AdminNavbar() {
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -140,7 +140,7 @@ function AdminNavbar() {
             onClick={(event) => event.preventDefault()}
             role="status"
           >
-            <span className="headerAdmin-app">Orquesta Cafè</span>
+            <span className="headerAdmin-app">Eliter</span>
             <span className="headerAdmin-sucursal">
               {user?.agency?.name || "—"}
               {user?.role != null && ROLE_LABELS[user.role]

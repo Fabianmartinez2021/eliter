@@ -25,6 +25,7 @@ import { isValidDate } from '../../helpers/date';
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css"; 
 import { useSyncFirstAgencyFormField } from '../../hooks/useSyncFirstAgency';
+import { usdFromRow } from '../../helpers/paymentMethodsUsdDisplay';
 
 function PaymentMethodsHistory() {
 
@@ -64,7 +65,6 @@ function PaymentMethodsHistory() {
 	// Inicializar tabla sin data
 	const [dataStores, setDataStores] = useState([]);
 	const [dataGeneral, setDataGeneral] = useState([]);
-	console.log('dataGeneral', dataGeneral);
 	const [rowCount, setRowCount] = useState(0);
 
 	//Columnas Data table
@@ -84,11 +84,13 @@ function PaymentMethodsHistory() {
 			},
 		},
 		{
-			name: 'Total',
+			name: 'Total (USD)',
 			selector: 'total',
 			sortable: true,
 			cell : (row)=>{
-				return  <NumberFormat value={row.total ? row.total.toFixed(2) : row.total} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} />
+				const u = usdFromRow(row, 'total');
+				const v = u != null ? u : (row.valueDollar && row.total ? row.total / row.valueDollar : row.total);
+				return  <NumberFormat value={v != null ? Number(v).toFixed(2) : '0.00'} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} />
 			},
 		},
 		{

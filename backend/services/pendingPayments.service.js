@@ -537,6 +537,8 @@ let pendingPaymentsService = {
             //  Se almacena el diferencial total
             dataParams.totalDifferential = totalDifferential;
 
+            dataParams.inventoryRecordIds = dataToDelete.InventoryRecord.slice();
+
             //  Se guarda como una venta normal en bolivares, ya luego se obtiene el diferencial total
             const sale = new Sales(dataParams);
 
@@ -855,6 +857,8 @@ let pendingPaymentsService = {
             Object.assign(dataSale, dataParams);
             dataSale.total = dataParams.total * dataParams.valueDollar;
             dataSale.comment = pendingPayment.order.toString();
+
+            dataSale.inventoryRecordIds = dataToDelete.InventoryRecord.slice();
 
             const sale = new Sales(dataSale);
             const saleSaved = await sale.save();
@@ -1344,6 +1348,99 @@ let pendingPaymentsService = {
         return {
             results: pendingPayments[0].data,
         }
+    },
+
+    /**
+     * Admin: editar datos de cliente / dirección de una cuenta pendiente (no cerrada).
+     */
+    adminUpdatePendingPayment: async (pendingId, patch) => {
+        const pp = await PendingPayments.findById(pendingId);
+        if (!pp) throw 'Cuenta pendiente no encontrada';
+        if (pp.status) throw 'No se puede editar una cuenta ya saldada';
+
+        const allowed = [
+            'names',
+            'businessName',
+            'phone',
+            'address',
+            'document',
+            'documentType',
+            'clientType',
+            'taxpayer',
+            'comment',
+        ];
+        const prevDocument = pp.document;
+        for (const key of allowed) {
+            if (patch[key] !== undefined && patch[key] !== null) {
+                pp[key] = patch[key];
+            }
+        }
+        await pp.save();
+
+        const wc = await WholesaleClient.findOne({ document: prevDocument });
+        if (wc) {
+            if (patch.names !== undefined) wc.names = pp.names;
+            if (patch.businessName !== undefined) wc.businessName = pp.businessName;
+            if (patch.phone !== undefined) wc.phone = pp.phone;
+            if (patch.address !== undefined) wc.address = pp.address;
+            if (patch.document !== undefined) wc.document = pp.document;
+            if (patch.documentType !== undefined) wc.documentType = pp.documentType;
+            if (patch.clientType !== undefined) wc.clientType = pp.clientType;
+            if (patch.taxpayer !== undefined) wc.taxpayer = pp.taxpayer;
+            if (patch.comment !== undefined) wc.comment = pp.comment;
+            await wc.save();
+        }
+
+        const sale = await Sales.findOne({
+            agency: pp.agency,
+            order: pp.order,
+            isCredit: true,
+        });
+        if (sale) {
+            const saleSet = {};
+            if (patch.names !== undefined) saleSet.names = pp.names;
+            if (patch.businessName !== undefined) saleSet.businessName = pp.businessName;
+            if (patch.phone !== undefined) saleSet.phone = pp.phone;
+            if (patch.document !== undefined) saleSet.document = pp.document;
+            if (patch.comment !== undefined) saleSet.comment = pp.comment;
+            if (Object.keys(saleSet).length > 0) {
+                await Sales.updateOne({ _id: sale._id }, { $set: saleSet });
+            }
+            const wsSet = {};
+            if (patch.names !== undefined) wsSet.names = pp.names;
+            if (patch.phone !== undefined) wsSet.phone = pp.phone;
+            if (patch.document !== undefined) wsSet.document = pp.document;
+            if (patch.comment !== undefined) wsSet.comment = pp.comment;
+            if (Object.keys(wsSet).length > 0) {
+                await Wholesales.updateOne(
+                    { order: pp.order, agency: pp.agency },
+                    { $set: wsSet }
+                );
+            }
+        }
+
+        return await PendingPayments.findById(pendingId);
+    },
+
+    /**
+     * Admin: eliminar cuenta de crédito sin abonos (revierte inventario vía venta asociada).
+     */
+    adminDeleteUnpaidPendingById: async (pendingId) => {
+        const pp = await PendingPayments.findById(pendingId);
+        if (!pp) throw 'Cuenta pendiente no encontrada';
+        if (pp.status) throw 'La cuenta ya está pagada';
+        if (pp.payments && pp.payments.length > 0) {
+            throw 'No se puede eliminar: existen abonos registrados';
+        }
+        const sale = await Sales.findOne({
+            agency: pp.agency,
+            order: pp.order,
+            isCredit: true,
+        });
+        if (!sale) {
+            throw 'No se encontró la venta de crédito vinculada a esta cuenta';
+        }
+        return salesService.deleteSaleByAdmin(sale._id.toString());
     },
 }
 

@@ -31,6 +31,8 @@ router.post('/weekly-wholesales-goal-realtime/', getWeeklyWholesalesGoalRealtime
 router.get('/coupon-history', getCouponHistory);
 router.post('/validate-coupon', validateCoupon);
 router.post('/seed-promo-coupons', seedPromoCoupons);
+router.delete('/admin-delete-sale/:id', deleteSaleAdmin);
+router.put('/admin-update-sale/:id', adminUpdateSale);
 
 module.exports = router;
 
@@ -222,6 +224,42 @@ function seedPromoCoupons(req, res, next) {
                 return res.status(403).json({ message: 'Solo administradores pueden ejecutar el seed de cupones' });
             }
             return salesService.seedPromoCoupons();
+        })
+        .then(result => res.json(result))
+        .catch(err => next(err));
+}
+
+/**
+ * DELETE venta (admin). Revierte inventario según inventoryRecordIds y limpia caja / mayor / cupón asociados.
+ */
+function deleteSaleAdmin(req, res, next) {
+    if (!req.user || !req.user.sub) {
+        return res.status(401).json({ message: 'No autorizado' });
+    }
+    userService.getById(req.user.sub)
+        .then(user => {
+            if (!user || user.role !== roleEnum.rol.Admin) {
+                return res.status(403).json({ message: 'Solo administradores pueden eliminar ventas' });
+            }
+            return salesService.deleteSaleByAdmin(req.params.id);
+        })
+        .then(result => res.json(result))
+        .catch(err => next(err));
+}
+
+/**
+ * PUT actualización administrativa de datos de cliente / nota (sin montos ni productos).
+ */
+function adminUpdateSale(req, res, next) {
+    if (!req.user || !req.user.sub) {
+        return res.status(401).json({ message: 'No autorizado' });
+    }
+    userService.getById(req.user.sub)
+        .then(user => {
+            if (!user || user.role !== roleEnum.rol.Admin) {
+                return res.status(403).json({ message: 'Solo administradores pueden editar ventas' });
+            }
+            return salesService.adminUpdateSale(req.params.id, req.body);
         })
         .then(result => res.json(result))
         .catch(err => next(err));

@@ -261,6 +261,8 @@ let pendingValesService = {
             //  Se almacena el diferencial total
             dataParams.totalDifferential = totalDifferential;
 
+            dataParams.inventoryRecordIds = dataToDelete.InventoryRecord.slice();
+
             //  Se guarda como una venta normal en bolivares, ya luego se obtiene el diferencial total
             const sale = new Sales(dataParams);
 
@@ -628,6 +630,8 @@ let pendingValesService = {
 
                 //  Se almacena el numero de orden del pago pendiente al que pertenece
                 dataSale.comment = pendingVales.order.toString();
+
+                dataSale.inventoryRecordIds = dataToDelete.InventoryRecord.slice();
 
                 const sale = new Sales(dataSale);
                 const saleSaved = await sale.save();

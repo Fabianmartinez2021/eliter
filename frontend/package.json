@@ -9,7 +9,7 @@
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.5.0",
 		"@testing-library/user-event": "^7.2.1",
-		"axios": "^1.7.7",
+		"axios": "0.27.2",
 		"canvas-confetti": "^1.9.4",
 		"chart.js": "^3.7.0",
 		"crypto-js": "^4.0.0",
@@ -41,13 +41,9 @@
 		"urlencode": "^1.1.0",
 		"xlsx": "^0.18.5"
 	},
-	"devDependencies": {
-		"sharp": "^0.32.6"
-	},
 	"scripts": {
 		"start": "react-scripts start",
-		"icons:pwa": "node scripts/export-pwa-icons.js",
-		"build": "npm run icons:pwa && react-scripts build",
+		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"scss": "node-sass --watch src/assets/scss -o src/assets/css"

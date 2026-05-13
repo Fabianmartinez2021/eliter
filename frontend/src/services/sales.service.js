@@ -56,6 +56,31 @@ export const salesService = {
     return handleResponse(response);
   },
 
+  salesDeleteAdmin: async (id) => {
+    const requestOptions = {
+      method: "DELETE",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+    };
+    const response = await fetch(
+      `${apiUrl}/sales/admin-delete-sale/${id}`,
+      requestOptions
+    );
+    return handleResponse(response);
+  },
+
+  salesAdminUpdate: async (id, body) => {
+    const requestOptions = {
+      method: "PUT",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    };
+    const response = await fetch(
+      `${apiUrl}/sales/admin-update-sale/${id}`,
+      requestOptions
+    );
+    return handleResponse(response);
+  },
+
   salesOffline: async (sales) => {
     const requestOptions = {
       method: "POST",

@@ -65,7 +65,9 @@ const schema = new Schema({
     createdDate: { type: Date, default: getTimeZoneDate },
     // Promo cupón (opcional): código usado y monto descontado
     couponCode: { type: String, default: '' },
-    couponDiscount: { type: Number, default: 0 }
+    couponDiscount: { type: Number, default: 0 },
+    // IDs de InventoryRecord creados con esta venta (orden = mismo que al registrar; vacío si solo delivery / sin salidas)
+    inventoryRecordIds: [{ type: Schema.Types.ObjectId, ref: 'InventoryRecord' }]
 });
 
 //Obtener fecha con hora venezuela

@@ -33,7 +33,7 @@ function LandingPageHeader() {
         ></div>
         <div className="content-center">
           <Container>
-            <h1 className="title">OrquestaCafè</h1>
+            <h1 className="title">Eliter</h1>
             <div className="text-center">
               <Button
                 className="btn-icon btn-round"

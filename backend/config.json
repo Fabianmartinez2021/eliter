@@ -1,5 +1,5 @@
 {
-  "connectionString": "mongodb://localhost/orquesta",
+  "connectionString": "mongodb://localhost/eliter",
   "secret": "app-development-22052020",
   "factoryWebhookUrl": "http://135.148.164.220:80000/api/webhook/product-update",
   "factoryAgencyWebhookUrl": "http://135.148.164.220:80000/api/webhook/agency-update",

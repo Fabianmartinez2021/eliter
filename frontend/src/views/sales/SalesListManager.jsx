@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { salesActions, userActions } from "../../actions";
+import { salesActions, userActions, alertActions } from "../../actions";
 import moment from "moment";
 // core components
 import AdminNavbar from "../../components/Navbars/AdminNavbar";
@@ -15,6 +15,10 @@ import {
   Form,
   FormGroup,
   Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Label,
   Badge,
 } from "reactstrap";
 //componente dataTable sede
@@ -33,7 +37,8 @@ import { useDarkMode } from '../../helpers/darkModeContext';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css";
-import { useSyncFirstAgencyFormField } from '../../hooks/useSyncFirstAgency';
+import { useSyncFirstAgencyFormField } from "../../hooks/useSyncFirstAgency";
+import { salesService } from "../../services";
 
 const companies = [
   "Principal",
@@ -43,6 +48,17 @@ const companies = [
   "DISTRIBUIDORA Y COMERCIALIZADORA MOREFINA"
 ];
 
+/** Misma regla que backend: día calendario Venezuela (UTC−4). */
+function venezuelaCalendarDayKey(d) {
+  return moment(d).utc().subtract(4, "hours").format("YYYY-MM-DD");
+}
+function isSameVenezuelaCalendarDayAsNow(date) {
+  if (!date) return false;
+  return (
+    venezuelaCalendarDayKey(date) ===
+    venezuelaCalendarDayKey(moment().toDate())
+  );
+}
 
 function SalesListManagerPage() {
   useEffect(() => {
@@ -96,6 +112,29 @@ function SalesListManagerPage() {
   }, [dataSales]);
 
   const [rowCount, setRowCount] = useState(0);
+
+  const [saleEditOpen, setSaleEditOpen] = useState(false);
+  const [saleEditRow, setSaleEditRow] = useState(null);
+  const [saleEditAllowPayments, setSaleEditAllowPayments] = useState(false);
+  const [saleEditForm, setSaleEditForm] = useState({
+    names: "",
+    businessName: "",
+    document: "",
+    phone: "",
+    comment: "",
+    ves: "",
+    dollar: "",
+    eur: "",
+    cop: "",
+    tAmmount: "",
+    pAmmount: "",
+    pAmmountExtra: "",
+    total: "",
+    valueDollar: "",
+    valueEur: "",
+    valueCop: "",
+  });
+
   //Columnas Data table
   const columns = [
     {
@@ -481,6 +520,114 @@ function SalesListManagerPage() {
       cell: (row) => {
         return moment(row.createdDate).utc().format("YYYY-MM-DD");
       },
+    },
+    {
+      name: "Acciones",
+      omit: user.role !== 1,
+      width: "200px",
+      cell: (row) => (
+        <div className="d-flex flex-wrap" style={{ gap: "6px" }}>
+          <Button
+            color="primary"
+            size="sm"
+            outline
+            title="Editar datos de cliente / nota; montos solo si la venta es de hoy (Venezuela) y no es crédito"
+            onClick={() => {
+              setSaleEditRow(row);
+              const allowPay =
+                isSameVenezuelaCalendarDayAsNow(row.createdDate) &&
+                !row.isCredit &&
+                !row.isPayment &&
+                !row.isSumation;
+              setSaleEditAllowPayments(allowPay);
+              setSaleEditForm({
+                names: row.names || "",
+                businessName: row.businessName || "",
+                document: row.document || "",
+                phone: row.phone || "",
+                comment: row.comment || "",
+                ...(allowPay
+                  ? {
+                      ves: row.ves ?? "",
+                      dollar: row.dollar ?? "",
+                      eur: row.eur ?? "",
+                      cop: row.cop ?? "",
+                      tAmmount: row.tAmmount ?? "",
+                      pAmmount: row.pAmmount ?? "",
+                      pAmmountExtra: row.pAmmountExtra ?? "",
+                      total: row.total ?? "",
+                      valueDollar: row.valueDollar ?? "",
+                      valueEur: row.valueEur ?? "",
+                      valueCop: row.valueCop ?? "",
+                    }
+                  : {
+                      ves: "",
+                      dollar: "",
+                      eur: "",
+                      cop: "",
+                      tAmmount: "",
+                      pAmmount: "",
+                      pAmmountExtra: "",
+                      total: "",
+                      valueDollar: "",
+                      valueEur: "",
+                      valueCop: "",
+                    }),
+              });
+              setSaleEditOpen(true);
+            }}
+          >
+            Editar
+          </Button>
+          <Button
+            color="danger"
+            size="sm"
+            outline
+            disabled={row.isSumation || row.isPayment}
+            title={
+              row.isSumation || row.isPayment
+                ? "Abonos/pagos de crédito no se eliminan desde aquí"
+                : row.isCredit
+                ? "Eliminar crédito inicial sin abonos (cuenta pendiente e inventario)"
+                : "Eliminar venta y reintegrar inventario"
+            }
+            onClick={async () => {
+              const saleId = row.id || row._id;
+              const msg = row.isCredit
+                ? `¿Eliminar el crédito / cuenta pendiente del ticket N° ${row.order}? Solo si no tiene abonos. Se reintegrará inventario.`
+                : `¿Eliminar la venta N° ${row.order}? Se reintegrará el inventario y se eliminarán los movimientos de caja asociados a este ticket.`;
+              if (!window.confirm(msg)) {
+                return;
+              }
+              try {
+                await salesService.salesDeleteAdmin(saleId);
+                dispatch(alertActions.success("Venta eliminada"));
+                dispatch(
+                  salesActions.dataTableUser(
+                    {
+                      agency: user.agency.id,
+                      role: user.role,
+                      id: user.id,
+                    },
+                    1,
+                    perPageSelect == 0 ? perPage : perPageSelect,
+                    direction,
+                    filters ? filters : {}
+                  )
+                );
+              } catch (err) {
+                dispatch(
+                  alertActions.error(
+                    typeof err === "string" ? err : err.message || "Error al eliminar"
+                  )
+                );
+              }
+            }}
+          >
+            Eliminar
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -2009,6 +2156,340 @@ function SalesListManagerPage() {
                 />
               </Col>
             </Row>
+            <Modal isOpen={saleEditOpen} toggle={() => setSaleEditOpen(false)} size="lg">
+              <ModalHeader toggle={() => setSaleEditOpen(false)}>
+                Editar venta (ticket N° {saleEditRow ? saleEditRow.order : ""})
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-muted small">
+                  {saleEditAllowPayments
+                    ? "Venta del día (Venezuela), no crédito: puede corregir montos; la caja se recalcula. No se editan productos ni inventario desde aquí."
+                    : "Solo datos de cliente y nota. Los montos solo el mismo día calendario Venezuela y si la venta no es crédito/abono/pago. Los productos no se modifican desde aquí."}
+                </p>
+                <FormGroup>
+                  <Label>Nombres</Label>
+                  <input
+                    className="form-control"
+                    value={saleEditForm.names}
+                    onChange={(e) =>
+                      setSaleEditForm((f) => ({ ...f, names: e.target.value }))
+                    }
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Razón social</Label>
+                  <input
+                    className="form-control"
+                    value={saleEditForm.businessName}
+                    onChange={(e) =>
+                      setSaleEditForm((f) => ({
+                        ...f,
+                        businessName: e.target.value,
+                      }))
+                    }
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Documento</Label>
+                  <input
+                    className="form-control"
+                    value={saleEditForm.document}
+                    onChange={(e) =>
+                      setSaleEditForm((f) => ({
+                        ...f,
+                        document: e.target.value,
+                      }))
+                    }
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Teléfono</Label>
+                  <input
+                    className="form-control"
+                    value={saleEditForm.phone}
+                    onChange={(e) =>
+                      setSaleEditForm((f) => ({ ...f, phone: e.target.value }))
+                    }
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Comentario / forma de pago (texto)</Label>
+                  <input
+                    className="form-control"
+                    value={saleEditForm.comment}
+                    onChange={(e) =>
+                      setSaleEditForm((f) => ({
+                        ...f,
+                        comment: e.target.value,
+                      }))
+                    }
+                  />
+                </FormGroup>
+                {saleEditAllowPayments && (
+                  <>
+                    <hr />
+                    <p className="small font-weight-bold">Montos (ajuste de caja)</p>
+                    <Row>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Bs</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.ves}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                ves: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>USD</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.dollar}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                dollar: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>EUR</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.eur}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                eur: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>COP</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.cop}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                cop: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Total</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.total}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                total: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Tasa USD (Bs)</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.valueDollar}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                valueDollar: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Tasa EUR</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.valueEur}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                valueEur: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Tasa COP</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.valueCop}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                valueCop: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Punto / transfer (tAmmount)</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.tAmmount}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                tAmmount: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>Efectivo extra (pAmmount)</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.pAmmount}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                pAmmount: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col md="4">
+                        <FormGroup>
+                          <Label>pAmmountExtra</Label>
+                          <input
+                            className="form-control"
+                            type="number"
+                            step="0.01"
+                            value={saleEditForm.pAmmountExtra}
+                            onChange={(e) =>
+                              setSaleEditForm((f) => ({
+                                ...f,
+                                pAmmountExtra: e.target.value,
+                              }))
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="secondary" onClick={() => setSaleEditOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button
+                  color="primary"
+                  onClick={async () => {
+                    if (!saleEditRow) return;
+                    const id = saleEditRow.id || saleEditRow._id;
+                    const payload = {
+                      names: saleEditForm.names,
+                      businessName: saleEditForm.businessName,
+                      document: saleEditForm.document,
+                      phone: saleEditForm.phone,
+                      comment: saleEditForm.comment,
+                    };
+                    if (saleEditAllowPayments) {
+                      Object.assign(payload, {
+                        ves: saleEditForm.ves,
+                        dollar: saleEditForm.dollar,
+                        eur: saleEditForm.eur,
+                        cop: saleEditForm.cop,
+                        tAmmount: saleEditForm.tAmmount,
+                        pAmmount: saleEditForm.pAmmount,
+                        pAmmountExtra: saleEditForm.pAmmountExtra,
+                        total: saleEditForm.total,
+                        valueDollar: saleEditForm.valueDollar,
+                        valueEur: saleEditForm.valueEur,
+                        valueCop: saleEditForm.valueCop,
+                      });
+                    }
+                    try {
+                      await salesService.salesAdminUpdate(id, payload);
+                      dispatch(alertActions.success("Venta actualizada"));
+                      setSaleEditOpen(false);
+                      dispatch(
+                        salesActions.dataTableUser(
+                          {
+                            agency: user.agency.id,
+                            role: user.role,
+                            id: user.id,
+                          },
+                          1,
+                          perPageSelect == 0 ? perPage : perPageSelect,
+                          direction,
+                          filters ? filters : {}
+                        )
+                      );
+                    } catch (err) {
+                      dispatch(
+                        alertActions.error(
+                          typeof err === "string"
+                            ? err
+                            : err.message || "Error al guardar"
+                        )
+                      );
+                    }
+                  }}
+                >
+                  Guardar
+                </Button>
+              </ModalFooter>
+            </Modal>
             {user.role !== 4 && (
               <>
                 <Row xs="12">

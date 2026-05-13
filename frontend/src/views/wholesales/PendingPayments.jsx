@@ -1,13 +1,13 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { pendingPaymentsActions, userActions } from '../../actions';
+import { pendingPaymentsActions, userActions, alertActions } from '../../actions';
 import moment from 'moment';
 // core components
 import AdminNavbar from "../../components/Navbars/AdminNavbar";
 import SideBar from "../../components/SideBar/SideBar"
 import DataTable from 'react-data-table-component';
-import { Button, Spinner, Row, Col, Table, Form, FormGroup, Modal, Badge, Label } from 'reactstrap';
+import { Button, Spinner, Row, Col, Table, Form, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Label } from 'reactstrap';
 import cashRegister from '@iconify/icons-fa-solid/cash-register';
 //componente dataTable sede
 import { history } from '../../helpers';
@@ -29,6 +29,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css"; 
 import { useSyncFirstAgencyFormField } from '../../hooks/useSyncFirstAgency';
+import { pendingPaymentsService } from '../../services';
 
 function PendingPaymentsPage() {
 
@@ -89,6 +90,21 @@ function PendingPaymentsPage() {
     
 	
 	const [rowCount, setRowCount] = useState(0)
+
+	const [pendingEditOpen, setPendingEditOpen] = useState(false);
+	const [pendingEditRow, setPendingEditRow] = useState(null);
+	const [pendingEditForm, setPendingEditForm] = useState({
+		names: '',
+		businessName: '',
+		document: '',
+		documentType: '',
+		phone: '',
+		address: '',
+		clientType: '',
+		taxpayer: '',
+		comment: '',
+	});
+
 	//Columnas Data table
 	const columns = [
 		
@@ -179,6 +195,81 @@ function PendingPaymentsPage() {
 			cell : (row)=>{
 				return moment(row.createdDate).utc().format("YYYY-MM-DD");
 			},
+		},
+		{
+			name: 'Acciones',
+			omit: user.role !== 1,
+			width: '200px',
+			cell: (row) => (
+				<div className="d-flex flex-wrap" style={{ gap: '6px' }}>
+					<Button
+						color="primary"
+						size="sm"
+						outline
+						disabled={row.status}
+						title={row.status ? 'Cuenta cerrada' : 'Editar datos del cliente'}
+						onClick={() => {
+							setPendingEditRow(row);
+							setPendingEditForm({
+								names: row.names || '',
+								businessName: row.businessName || '',
+								document: row.document || '',
+								documentType: row.documentType || '',
+								phone: row.phone || '',
+								address: row.address || '',
+								clientType: row.clientType || '',
+								taxpayer: row.taxpayer || '',
+								comment: row.comment || '',
+							});
+							setPendingEditOpen(true);
+						}}
+					>
+						Editar
+					</Button>
+					<Button
+						color="danger"
+						size="sm"
+						outline
+						disabled={row.status}
+						title={
+							row.status
+								? 'Cuenta ya pagada'
+								: 'Eliminar crédito sin abonos (reintegra inventario)'
+						}
+						onClick={async () => {
+							const id = row.id || row._id;
+							if (
+								!window.confirm(
+									`¿Eliminar la cuenta pendiente orden ${row.order}? Solo si no tiene abonos. Se borrará la venta de crédito y se reintegrará inventario.`
+								)
+							) {
+								return;
+							}
+							try {
+								await pendingPaymentsService.pendingPaymentsAdminDeleteUnpaid(id);
+								dispatch(alertActions.success('Cuenta eliminada'));
+								dispatch(
+									pendingPaymentsActions.dataTable(
+										getUserData(),
+										1,
+										perPageSelect == 0 ? perPage : perPageSelect,
+										direction,
+										filters ? filters : {}
+									)
+								);
+							} catch (err) {
+								dispatch(
+									alertActions.error(
+										typeof err === 'string' ? err : err.message || 'Error al eliminar'
+									)
+								);
+							}
+						}}
+					>
+						Eliminar
+					</Button>
+				</div>
+			),
 		},
 	];
   
@@ -938,7 +1029,170 @@ function PendingPaymentsPage() {
 								conditionalRowStyles={conditionalRowStyles}
 							/>
 							</Col>
-						</Row>						
+						</Row>
+						<Modal isOpen={pendingEditOpen} toggle={() => setPendingEditOpen(false)} size="lg">
+							<ModalHeader toggle={() => setPendingEditOpen(false)}>
+								Editar cuenta pendiente (orden {pendingEditRow ? pendingEditRow.order : ''})
+							</ModalHeader>
+							<ModalBody>
+								<p className="text-muted small">
+									Corrección de datos de cliente. No modifica montos, productos ni abonos.
+								</p>
+								<FormGroup>
+									<Label>Nombres</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.names}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({ ...f, names: e.target.value }))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Razón social</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.businessName}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												businessName: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Tipo doc.</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.documentType}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												documentType: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Documento</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.document}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												document: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Teléfono</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.phone}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												phone: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Dirección</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.address}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												address: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Tipo cliente</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.clientType}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												clientType: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Contribuyente</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.taxpayer}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												taxpayer: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Label>Comentario</Label>
+									<input
+										className="form-control"
+										value={pendingEditForm.comment}
+										onChange={(e) =>
+											setPendingEditForm((f) => ({
+												...f,
+												comment: e.target.value,
+											}))
+										}
+									/>
+								</FormGroup>
+							</ModalBody>
+							<ModalFooter>
+								<Button color="secondary" onClick={() => setPendingEditOpen(false)}>
+									Cancelar
+								</Button>
+								<Button
+									color="primary"
+									onClick={async () => {
+										if (!pendingEditRow) return;
+										const id = pendingEditRow.id || pendingEditRow._id;
+										try {
+											await pendingPaymentsService.pendingPaymentsAdminUpdate(
+												id,
+												pendingEditForm
+											);
+											dispatch(alertActions.success('Cuenta actualizada'));
+											setPendingEditOpen(false);
+											dispatch(
+												pendingPaymentsActions.dataTable(
+													getUserData(),
+													1,
+													perPageSelect == 0 ? perPage : perPageSelect,
+													direction,
+													filters ? filters : {}
+												)
+											);
+										} catch (err) {
+											dispatch(
+												alertActions.error(
+													typeof err === 'string'
+														? err
+														: err.message || 'Error al guardar'
+												)
+											);
+										}
+									}}
+								>
+									Guardar
+								</Button>
+							</ModalFooter>
+						</Modal>
 						{data && data.length > 0 && (
                             <Button
                                 className="btn"

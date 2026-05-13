@@ -14,7 +14,7 @@ function DarkFooter() {
               <a
                 target="_blank"
               >
-                OrquestaCafè
+                Eliter
               </a>
             </li>
             <li>
@@ -38,7 +38,7 @@ function DarkFooter() {
           <a
             href="#"
           >
-            OrquestaCafè
+            Eliter
           </a>
           .
         </div>

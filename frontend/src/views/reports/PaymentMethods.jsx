@@ -27,20 +27,25 @@ import { useSyncFirstAgencyFormField } from '../../hooks/useSyncFirstAgency';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import "../../assets/css/darkMode.css";
+import { usdFromRow, formatUsd } from '../../helpers/paymentMethodsUsdDisplay';
 
 // Tabla de resumen de caja desplegable (fuera del componente para conservar estado al colapsar)
 function SummaryTableCollapsible({ data, darkMode }) {
 	const [isSummaryOpen, setIsSummaryOpen] = useState(false);
-	const isOk = data && (data.totalAmountBox - data.totalAmount) >= 0;
+	const boxUsd = usdFromRow(data, 'totalAmountBox');
+	const amtUsd = usdFromRow(data, 'totalAmount');
+	const sellUsd = usdFromRow(data, 'totalSell');
+	const sumUsd = usdFromRow(data, 'totalSumation');
+	const isOk = boxUsd != null && amtUsd != null && (boxUsd - amtUsd) >= 0;
 	const summaryHeaderBg = darkMode ? (isOk ? 'rgba(46, 125, 50, 0.35)' : 'rgba(198, 40, 40, 0.35)') : (isOk ? 'rgba(46, 125, 50, 0.12)' : 'rgba(198, 40, 40, 0.12)');
 	const summaryRowBg = darkMode ? (isOk ? 'rgba(46, 125, 50, 0.15)' : 'rgba(198, 40, 40, 0.15)') : (isOk ? 'rgba(46, 125, 50, 0.08)' : 'rgba(198, 40, 40, 0.08)');
 	const borderColor = darkMode ? (isOk ? '#2e7d32' : '#c62828') : (isOk ? '#81c784' : '#e57373');
 	const rows = data ? [
-		{ label: 'Total de abonos Bs', value: data.totalSumation != null ? data.totalSumation.toFixed(2) : '0.00', fmt: true },
-		{ label: 'Monto vendido Bs', value: data.totalSell != null ? data.totalSell.toFixed(2) : '0.00', fmt: true },
-		{ label: 'Monto en caja Bs', value: data.totalAmount != null ? data.totalAmount.toFixed(2) : '0.00', fmt: true },
-		{ label: 'Monto real en caja Bs', value: data.totalAmountBox != null ? data.totalAmountBox.toFixed(2) : '0.00', fmt: true },
-		{ label: 'Diferencia Bs', value: (data.totalAmountBox - data.totalAmount).toFixed(2), fmt: false }
+		{ label: 'Total de abonos (USD)', value: sumUsd != null ? formatUsd(sumUsd) : '0.00', fmt: true },
+		{ label: 'Monto vendido (USD)', value: sellUsd != null ? formatUsd(sellUsd) : '0.00', fmt: true },
+		{ label: 'Monto en caja (USD)', value: amtUsd != null ? formatUsd(amtUsd) : '0.00', fmt: true },
+		{ label: 'Monto real en caja (USD)', value: boxUsd != null ? formatUsd(boxUsd) : '0.00', fmt: true },
+		{ label: 'Diferencia (USD)', value: (boxUsd != null && amtUsd != null) ? (boxUsd - amtUsd).toFixed(2) : '0.00', fmt: false }
 	] : [];
 	return (
 		<div style={{ marginTop: '20px', maxWidth: '420px', border: `1px solid ${borderColor}`, borderRadius: '10px', overflow: 'hidden', boxShadow: darkMode ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.08)' }}>
@@ -73,7 +78,7 @@ function SummaryTableCollapsible({ data, darkMode }) {
 							<tr key={idx} style={{ background: summaryRowBg }}>
 								<th style={{ width: '55%', padding: '10px 14px', fontWeight: 600, color: darkMode ? '#e0e0e0' : '#333', borderBottom: idx < rows.length - 1 ? (darkMode ? '1px solid #444' : '1px solid rgba(0,0,0,0.06)') : 'none' }}>{row.label}</th>
 								<td className="text-right font-weight-bold" style={{ padding: '10px 14px', color: darkMode ? '#fff' : '#333', borderBottom: idx < rows.length - 1 ? (darkMode ? '1px solid #444' : '1px solid rgba(0,0,0,0.06)') : 'none' }}>
-									{row.fmt ? <NumberFormat value={row.value} displayType="text" thousandSeparator={true} /> : `Bs ${row.value}`}
+									{row.fmt ? <NumberFormat value={row.value} displayType="text" thousandSeparator={true} prefix="US$ " /> : `US$ ${row.value}`}
 								</td>
 							</tr>
 						))}
@@ -254,9 +259,9 @@ function PaymentMethodsPage() {
 			<div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
 				{/* Punto de venta */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Punto de venta:</span>
+					<span className="payment-method-label">Punto de venta (USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalPos.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalPos') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalPos ? (
 						<button 
@@ -270,9 +275,9 @@ function PaymentMethodsPage() {
 
 				{/* Efectivo Bs */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Efectivo Bs:</span>
+					<span className="payment-method-label">Efectivo Bs (equiv. USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalVes.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalVes') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalVes ? (
 						<button 
@@ -286,9 +291,9 @@ function PaymentMethodsPage() {
 
 				{/* Dólar */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Dólar:</span>
+					<span className="payment-method-label">Dólar (USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalDollar.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalDollar') ?? data.totalDollar ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalDollar ? (
 						<button 
@@ -302,9 +307,9 @@ function PaymentMethodsPage() {
 
 				{/* Euros */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Euros:</span>
+					<span className="payment-method-label">Euros (equiv. USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalEur.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalEur') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalEur ? (
 						<button 
@@ -318,9 +323,9 @@ function PaymentMethodsPage() {
 
 				{/* Pesos */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Pesos:</span>
+					<span className="payment-method-label">Pesos (equiv. USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalCop.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalCop') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalCop ? (
 						<button 
@@ -334,9 +339,9 @@ function PaymentMethodsPage() {
 
 				{/* Transferencias - botón Detalle solo si hay datos */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Transferencias:</span>
+					<span className="payment-method-label">Transferencias (equiv. USD):</span>
 					<span className="payment-method-value">
-						<NumberFormat value={data.totalTransfer.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalTransfer') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalTransfer ? (
 						<button 
@@ -350,9 +355,9 @@ function PaymentMethodsPage() {
 
 				{/* Descuentos por cupón */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Descuentos por cupón:</span>
+					<span className="payment-method-label">Descuentos por cupón (equiv. USD):</span>
 					<span className="payment-method-value">
-						Bs <NumberFormat value={(data.totalCouponDiscount != null ? data.totalCouponDiscount : 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalCouponDiscount') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{((data.totalCouponDiscount != null ? data.totalCouponDiscount : 0) > 0) ? (
 						<button 
@@ -366,9 +371,9 @@ function PaymentMethodsPage() {
 
 				{/* Saldo final por créditos */}
 				<div className="payment-method-card">
-					<span className="payment-method-label">Saldo final por créditos del día:</span>
+					<span className="payment-method-label">Saldo final por créditos del día (equiv. USD):</span>
 					<span className="payment-method-value">
-						Bs <NumberFormat value={data.totalCredit.toFixed(2)} displayType={'text'} thousandSeparator={true} />
+						US$ <NumberFormat value={(usdFromRow(data, 'totalCredit') ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} />
 					</span>
 					{data.totalCredit && data.totalCredit > 0 ? (
 						<button 
@@ -413,6 +418,7 @@ function PaymentMethodsPage() {
 	};
 
 	const [totalDetail, setTotalDetail] = useState(0);
+	const [totalDetailUsd, setTotalDetailUsd] = useState(null);
 	const [type, setType] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 
@@ -462,6 +468,11 @@ function PaymentMethodsPage() {
 	useEffect(() => {
 		if (!saleDetail.loadingDetail && saleDetail.dataDetail?.results) {
 			setTotalDetail(saleDetail.dataDetail.total);
+			setTotalDetailUsd(
+				saleDetail.dataDetail.totalUsd != null
+					? saleDetail.dataDetail.totalUsd
+					: null
+			);
 			setListDetail(saleDetail.dataDetail.results);
 			setLoadingExportTransfer(false);
 			setLoadingExportPdv(false);
@@ -472,13 +483,13 @@ function PaymentMethodsPage() {
 	const headers = [
 		{ label: "Fecha", key: "date" },
 		{ label: "Sucursal", key: "agency.name" },
-		{ label: "Monto Total", key: "totalAmountBox" },
-		{ label: "Punto de venta", key: "totalPos" },
-		{ label: "Efectivo Bs", key: "totalVes" },
+		{ label: "Monto Total (USD)", key: "displayUsd.totalAmountBox" },
+		{ label: "Punto de venta (USD)", key: "displayUsd.totalPos" },
+		{ label: "Efectivo Bs eq. USD", key: "displayUsd.totalVes" },
 		{ label: "Dólar", key: "totalDollar" },
-		{ label: "Euros", key: "totalEur" },
-		{ label: "Pesos", key: "totalCop" },
-		{ label: "Transferencias", key: "totalTransfer" }
+		{ label: "Euros eq. USD", key: "displayUsd.totalEur" },
+		{ label: "Pesos eq. USD", key: "displayUsd.totalCop" },
+		{ label: "Transferencias eq. USD", key: "displayUsd.totalTransfer" }
 	];
 
 	const [exportConfig, setExportConfig] = useState({
@@ -537,6 +548,7 @@ function PaymentMethodsPage() {
 		setModalVisible(false);
 		setListDetail([]);
 		setTotalDetail(0);
+		setTotalDetailUsd(null);
 		setType(0);
 	}
 
@@ -648,7 +660,8 @@ function PaymentMethodsPage() {
 			selector: 'totalAmountBox',
 			sortable: true,
 			cell: (row) => {
-				return <NumberFormat value={row.totalAmountBox ? row.totalAmountBox.toFixed(2) : row.totalAmountBox} displayType={'text'} thousandSeparator={true} />
+				const u = usdFromRow(row, 'totalAmountBox');
+				return <NumberFormat value={u != null ? u.toFixed(2) : '0.00'} displayType={'text'} thousandSeparator={true} prefix={'US$ '} />
 			},
 		},
 		{
@@ -1148,28 +1161,28 @@ function PaymentMethodsPage() {
 								</tr>
 								{
 									dataComponent.terminalAmmounts.map((terminalAmmount) => {
-										return <TerminalRow terminalAmmount={terminalAmmount} key={terminalAmmount.terminal.code} />
+										return <TerminalRow terminalAmmount={terminalAmmount} valueDollar={dataComponent.valueDollar} key={terminalAmmount.terminal.code} />
 									})
 								}
 								<tr>
 									<th rowSpan={1} colSpan={6}>Total PDV</th>
-									<td rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.pAmmount.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.pAmmount != null ? dataComponent.displayUsd.pAmmount : (dataComponent.pAmmount / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={6}>Total PDV según sistema</th>
-									<td rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.virtualValues.totalPos.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalPos != null ? dataComponent.displayUsd.virtualValues.totalPos : (dataComponent.virtualValues.totalPos / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={6}>Diferencia</th>
-									<td rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.pAmmount - dataComponent.virtualValues.totalPos).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={6}><NumberFormat value={((dataComponent.displayUsd && dataComponent.displayUsd.pAmmount != null ? dataComponent.displayUsd.pAmmount : dataComponent.pAmmount / (dataComponent.valueDollar || 1)) - (dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalPos != null ? dataComponent.displayUsd.virtualValues.totalPos : dataComponent.virtualValues.totalPos / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<td style={{ background: '#dddddd' }} rowSpan={1} colSpan={12}></td>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={6}>Total por Transferencia</th>
-									<td rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.tAmmount.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.tAmmount != null ? dataComponent.displayUsd.tAmmount : (dataComponent.tAmmount / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<td style={{ background: '#dddddd' }} rowSpan={1} colSpan={12}></td>
@@ -1178,46 +1191,46 @@ function PaymentMethodsPage() {
 									<th rowSpan={1} colSpan={3}>Divisa</th>
 									<th rowSpan={1} colSpan={3}>Total</th>
 									<th rowSpan={1} colSpan={3}>Cambio</th>
-									<th rowSpan={1} colSpan={3}>Total en bolivares</th>
+									<th rowSpan={1} colSpan={3}>Equiv. USD</th>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={3}>Efectivo</th>
-									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.ves.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.ves != null ? dataComponent.displayUsd.ves : (dataComponent.ves / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 									<td rowSpan={1} colSpan={3}></td>
-									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.ves.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.ves != null ? dataComponent.displayUsd.ves : (dataComponent.ves / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={3}>Dólares</th>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.dollar.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'$ '} /></td>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.valueDollar.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
-									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.dollar * dataComponent.valueDollar).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalDollarVes != null ? dataComponent.displayUsd.virtualValues.totalDollarVes : ((dataComponent.dollar * dataComponent.valueDollar) / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={3}>Pesos</th>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.cop.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'COP$ '} /></td>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.valueCop.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
-									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.cop / dataComponent.valueCop).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalCopVes != null ? dataComponent.displayUsd.virtualValues.totalCopVes : ((dataComponent.cop / (dataComponent.valueCop || 1)) / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<th rowSpan={1} colSpan={3}>Euros</th>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.eur.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'€ '} /></td>
 									<td rowSpan={1} colSpan={3}><NumberFormat value={dataComponent.valueEur.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
-									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.eur * dataComponent.valueEur).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td rowSpan={1} colSpan={3}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalEurVes != null ? dataComponent.displayUsd.virtualValues.totalEurVes : ((dataComponent.eur * dataComponent.valueEur) / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr>
 									<td style={{ background: '#dddddd' }} rowSpan={1} colSpan={12}></td>
 								</tr>
 								<tr style={{ height: '4rem', fontSize: 'x-large' }}>
 									<th style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}>INGRESOS TOTALES DE LA TIENDA REALES</th>
-									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.total.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.total != null ? dataComponent.displayUsd.total : (dataComponent.total / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr style={{ height: '4rem', fontSize: 'x-large' }}>
 									<th style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}>INGRESOS TOTALES POR SISTEMA</th>
-									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.virtualValues.totalAmountBox.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.virtualValues && dataComponent.displayUsd.virtualValues.totalAmountBox != null ? dataComponent.displayUsd.virtualValues.totalAmountBox : (dataComponent.virtualValues.totalAmountBox / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								<tr style={{ height: '4rem', fontSize: 'x-large' }}>
 									<th style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}>DIFERENCIA</th>
-									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={dataComponent.differential.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+									<td style={{ verticalAlign: 'middle' }} rowSpan={1} colSpan={6}><NumberFormat value={(dataComponent.displayUsd && dataComponent.displayUsd.differential != null ? dataComponent.displayUsd.differential : (dataComponent.differential / (dataComponent.valueDollar || 1))).toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 								</tr>
 								{dataComponent.comment && <>
 									<tr>
@@ -1274,7 +1287,9 @@ function PaymentMethodsPage() {
 		</>
 	)
 
-	const TerminalRow = ({ terminalAmmount }) => {
+	const TerminalRow = ({ terminalAmmount, valueDollar }) => {
+		const vd = parseFloat(valueDollar) || 1;
+		const du = (n) => (Number(n) / vd).toFixed(2);
 
 		return <>
 			<tr>
@@ -1286,15 +1301,15 @@ function PaymentMethodsPage() {
 			<tr>
 				<td style={{ verticalAlign: 'middle', fontSize: 'x-large' }} rowSpan={3} colSpan={2}>{terminalAmmount.lote}</td>
 				<th rowSpan={1} colSpan={2}>Debito impreso</th>
-				<td rowSpan={1} colSpan={2}><NumberFormat value={terminalAmmount.debit.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+				<td rowSpan={1} colSpan={2}><NumberFormat value={du(terminalAmmount.debit)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 			</tr>
 			<tr>
 				<th rowSpan={1} colSpan={2}>Crédito impreso</th>
-				<td rowSpan={1} colSpan={2}><NumberFormat value={terminalAmmount.credit.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+				<td rowSpan={1} colSpan={2}><NumberFormat value={du(terminalAmmount.credit)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 			</tr>
 			<tr>
 				<th rowSpan={1} colSpan={2}>Total impreso</th>
-				<td rowSpan={1} colSpan={2}><NumberFormat value={terminalAmmount.total.toFixed(2)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'Bs '} /></td>
+				<td rowSpan={1} colSpan={2}><NumberFormat value={du(terminalAmmount.total)} displayType={'text'} thousandSeparator={','} decimalSeparator={'.'} prefix={'US$ '} /></td>
 			</tr>
 			<tr>
 				<td style={{ background: '#dddddd' }} rowSpan={1} colSpan={12}></td>
@@ -1537,7 +1552,7 @@ function PaymentMethodsPage() {
 														<td>{moment(detail.createdDate).utc().format("hh:mm:ss a")}</td>
 														{type === 7 ? '' : <td><NumberFormat value={(type == 1 && detail.dollar) ? (detail.dollar.toFixed(2)) : ((type == 2 && detail.eur) ? (detail.eur.toFixed(2)) : detail.cop.toFixed(2))} displayType={'text'} thousandSeparator={true} /></td>}
 														{type === 7 ? '' : <td><NumberFormat value={(type == 1 && detail.valueDollar) ? (detail.valueDollar.toFixed(2)) : ((type == 2 && detail.valueEur) ? (detail.valueEur.toFixed(2)) : detail.valueCop.toFixed(2))} displayType={'text'} thousandSeparator={true} /></td>}
-														<td><NumberFormat value={detail.subTotal.toFixed(2)} displayType={'text'} thousandSeparator={true} /></td>
+														<td><NumberFormat value={(detail.subTotalUsd != null ? detail.subTotalUsd : 0).toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'US$ '} /></td>
 														<td>
 															{
 															detail.isSumation
@@ -1582,7 +1597,7 @@ function PaymentMethodsPage() {
 												return (
 													<tr key={index}>
 														<td>{detail.order}</td>
-														<td><NumberFormat value={(detail.tAmmount ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} /></td>
+														<td><NumberFormat value={(detail.tAmmount ?? 0).toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'US$ '} /></td>
 														<td>{detail.tReference}</td>
 														<td>{normalizeTransferBankLabel(detail.tBank)}</td>
 														<td>
@@ -1637,7 +1652,7 @@ function PaymentMethodsPage() {
 														<td>{detail.terminal ? detail.terminal.code : ''}</td>
 														<td><NumberFormat value={detail.pAmmountExtra ? detail.pAmmountExtra.toFixed(2) : 0} displayType={'text'} thousandSeparator={true} /></td>
 														<td>{detail.pReferenceExtra ? detail.pReferenceExtra : ''}</td>
-														<td><NumberFormat value={detail.subTotal.toFixed(2)} displayType={'text'} thousandSeparator={true} /></td>
+														<td><NumberFormat value={(detail.subTotalUsd != null ? detail.subTotalUsd : 0).toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'US$ '} /></td>
 														<td>
 															{detail.type === 2
 															? 'Mayor'
@@ -1682,7 +1697,7 @@ function PaymentMethodsPage() {
 													<tr key={index}>
 														<td>{detail.order}</td>
 														<td>{detail.names}</td>
-														<td><NumberFormat value={detail.total.toFixed(2)} displayType={'text'} thousandSeparator={true} /></td>
+														<td><NumberFormat value={(detail.subTotalUsd != null ? detail.subTotalUsd : 0).toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'US$ '} /></td>
 
 													</tr>
 												)
@@ -1718,7 +1733,7 @@ function PaymentMethodsPage() {
 												</CSVLink>
 											</div>
 										</Col>}
-										<Col><div className="pull-right"><b>Total: <NumberFormat value={totalDetail.toFixed(2)} displayType={'text'} thousandSeparator={true} /></b> </div></Col>
+										<Col><div className="pull-right"><b>Total: <NumberFormat value={(totalDetailUsd != null ? totalDetailUsd : (listDetail[0] && listDetail[0].valueDollar ? totalDetail / listDetail[0].valueDollar : totalDetail)).toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'US$ '} /></b> </div></Col>
 									</Row>
 									}
 								</>

@@ -10,10 +10,10 @@ function TransparentFooter() {
       <Container>
         {<nav>
           <div className="copyright" id="copyright">
-            © {new Date().getFullYear()}, Diseñado por Orquesta Cafè.{" "}
+            © {new Date().getFullYear()}, Diseñado por Eliter.{" "}
           </div>
           <div>
-            Orquesta Cafè System Version 2.1.7
+            Eliter · versión 2.1.7
           </div>
         </nav>}
       </Container>

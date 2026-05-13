@@ -184,7 +184,7 @@ function SideBar() {
 				<div className="sidebar-heading">
 					<NavLink to="/home" className="sidebar-brand-link">
 						<span className="sidebar-brand-text">
-							Orquesta <span className="sidebar-brand-accent">Cafè</span>
+							ELI<span className="sidebar-brand-accent">TER</span>
 						</span>
 					</NavLink>
 				</div>

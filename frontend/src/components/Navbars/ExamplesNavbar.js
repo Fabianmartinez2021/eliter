@@ -58,10 +58,10 @@ function ExamplesNavbar() {
 				href="#"
 				id="navbar-brand"
 				>
-				OrquestaCafè
+				Eliter
 				</NavbarBrand>
 				<UncontrolledTooltip target="#navbar-brand">
-					OrquestaCafè
+					Eliter
 				</UncontrolledTooltip>
 				<button
 				className="navbar-toggler navbar-toggler"

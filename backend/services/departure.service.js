@@ -64,33 +64,11 @@ let departureService = {
                     throw (`El producto ${item.name} no existe en el inventario.`);
                 }
 
-                // Verificar stock suficiente - No se permite stock negativo
-                let availableStock = parseFloat(inventory.kg.toFixed(2)); // Convertir kg a número
-                let requestedKg = parseFloat(item.kg); // Convertir cantidad solicitada a número
-
-                // Verificar si hay suficiente stock
-                if (availableStock < 0) {
-                    throw (`El producto ${item.name} no tiene stock disponible.`);
-                }
-
-                if (availableStock < requestedKg) {
-                    throw (
-                        `No hay suficiente stock de ${item.name}. Disponible: ${availableStock} kg, Requerido: ${requestedKg} kg.`
-                    );
-                }
-
-                    //Registrar en historial de inventario
+                // Registrar en historial de inventario (misma política que ventas: se permite saldo negativo)
 
                     //lo que hay actualmente menos lo que 
                     let inv = inventory.kg.toFixed(3)
                     let total = parseFloat(inv) - parseFloat(item.kg);
-                    
-                    // Validación adicional: asegurar que el total no sea negativo
-                    if (total < 0) {
-                        throw (
-                            `No hay suficiente stock de ${item.name}. Disponible: ${availableStock} kg, Requerido: ${requestedKg} kg.`
-                        );
-                    }
                     let inventoryParam = {};
                     inventoryParam.product = item.id;
                     inventoryParam.agency = depParam.agency;
@@ -241,11 +219,112 @@ let departureService = {
             }else{
 
                 /**
-                 * No se permite crear inventario negativo
-                 * Si no existe inventario, se lanza un error
+                 * Sin fila previa en inventario: misma política que ventas (crear inventario y permitir saldo negativo).
                  */
-                throw (`El producto ${item.name} no existe en el inventario.`);
-                
+                let total = 0 - parseFloat(item.kg);
+
+                let newProd = {};
+                newProd.product = item.id;
+                newProd.agency = depParam.agency;
+                newProd.kg = total;
+                const newInventory = new Inventory(newProd);
+                await newInventory.save();
+
+                let inventoryParam = {};
+                inventoryParam.product = item.id;
+                inventoryParam.agency = depParam.agency;
+                inventoryParam.kg = '0.000';
+                inventoryParam.in = 0;
+                inventoryParam.out = type == enumOut.out.cutout ? 0 : item.kg.toFixed(3);
+                inventoryParam.total = total.toFixed(3);
+                inventoryParam.note = ' ';
+                inventoryParam.cut = type == enumOut.out.cutout ? item.kg.toFixed(3) : 0;
+                inventoryParam.comment = depParam.comment ? depParam.comment : '';
+                inventoryParam.type = type;
+
+                const record = new InventoryRecord(inventoryParam);
+                await record.save();
+
+                if (type != enumOut.out.correction && type != enumOut.out.transfer && type != enumOut.out.cutout && type != enumOut.out.transferToFatt) {
+                    try {
+                        if (product && (product.decrease || product.mincemeat)) {
+                            let average = 0.012;
+                            let typeOut = enumOut.out.decrease;
+                            if (product.mincemeat) {
+                                average = 0.010;
+                                typeOut = enumOut.out.mincemeat;
+                            }
+                            let totalDecrease = total - average * parseFloat(item.kg);
+                            let decrease = average * parseFloat(item.kg);
+
+                            let decreaseParam = {};
+                            decreaseParam.product = item.id;
+                            decreaseParam.agency = depParam.agency;
+                            decreaseParam.kg = total;
+                            decreaseParam.in = 0;
+                            decreaseParam.out = decrease.toFixed(3);
+                            decreaseParam.total = totalDecrease.toFixed(3);
+                            decreaseParam.note = ' ';
+                            decreaseParam.comment = '';
+                            decreaseParam.type = typeOut;
+
+                            const recordDecrease = new InventoryRecord(decreaseParam);
+                            await recordDecrease.save();
+
+                            await Inventory.findOneAndUpdate({ product: item.id, agency: depParam.agency }, { kg: totalDecrease });
+                        }
+                    } catch (e) {
+                        console.log('error en merma o picadillo', e);
+                    }
+                }
+
+                if (type == enumOut.out.cutout) {
+                    let productCode = cutOut.cutOutCode[parseInt(item.code)];
+                    if (productCode) {
+                        let targetProduct = await Product.findOne({ code: productCode });
+                        if (targetProduct) {
+                            let inventoryIn = await Inventory.findOne({ product: targetProduct._id, agency: depParam.agency }).populate('product');
+                            if (inventoryIn) {
+                                let totalCutIn = parseFloat(inventoryIn.kg) + parseFloat(item.kg);
+                                let inventoryParamCut = {};
+                                inventoryParamCut.product = targetProduct._id;
+                                inventoryParamCut.agency = depParam.agency;
+                                inventoryParamCut.kg = inventoryIn.kg.toFixed(3);
+                                inventoryParamCut.in = 0;
+                                inventoryParamCut.out = 0;
+                                inventoryParamCut.cut = item.kg.toFixed(3);
+                                inventoryParamCut.total = totalCutIn.toFixed(3);
+                                inventoryParamCut.note = ' ';
+                                inventoryParamCut.comment = depParam.comment ? depParam.comment : '';
+                                inventoryParamCut.type = enumOut.out.cutin;
+                                const recordCut = new InventoryRecord(inventoryParamCut);
+                                await recordCut.save();
+                                await Inventory.findOneAndUpdate({ product: targetProduct._id, agency: depParam.agency }, { kg: totalCutIn });
+                            } else {
+                                let totalCutIn = parseFloat(item.kg);
+                                let newProdCut = {};
+                                newProdCut.product = targetProduct._id;
+                                newProdCut.agency = depParam.agency;
+                                newProdCut.kg = totalCutIn;
+                                const invCut = new Inventory(newProdCut);
+                                await invCut.save();
+                                let inventoryParamCut = {};
+                                inventoryParamCut.product = targetProduct._id;
+                                inventoryParamCut.agency = depParam.agency;
+                                inventoryParamCut.kg = 0;
+                                inventoryParamCut.in = 0;
+                                inventoryParamCut.out = 0;
+                                inventoryParamCut.cut = item.kg.toFixed(3);
+                                inventoryParamCut.total = totalCutIn.toFixed(3);
+                                inventoryParamCut.note = ' ';
+                                inventoryParamCut.comment = depParam.comment ? depParam.comment : '';
+                                inventoryParamCut.type = enumOut.out.cutin;
+                                const recordCut = new InventoryRecord(inventoryParamCut);
+                                await recordCut.save();
+                            }
+                        }
+                    }
+                }
             }
 
         }
