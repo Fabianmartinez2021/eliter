@@ -274,11 +274,21 @@ function ProductListPage() {
 			button: true,
 			compact: true,
 			omit: user.role !== 1,
-			cell: row => <Button className="btn-link" color="primary" size="sm" onClick={e => {
-				e.preventDefault();
-				history.push('/update-product', { id: row.id })
-			}
-			}><i className="fas fa-pencil-alt"></i></Button>,
+			cell: row => (
+				<Button
+					outline
+					color="primary"
+					size="sm"
+					title="Editar producto"
+					aria-label="Editar producto"
+					onClick={e => {
+						e.preventDefault();
+						history.push('/update-product', { id: row.id });
+					}}
+				>
+					<i className="fa fa-pencil" aria-hidden="true" />
+				</Button>
+			),
 		},
 		{
 			name: 'Fecha de actualización',

@@ -1848,9 +1848,11 @@ function PaymentMethodsPage() {
 											<FormGroup>
 												<Label for="bsValue">
 													<b>Efectivo Bs: <NumberFormat value={dataToClose ? dataToClose.totalVes.toFixed(2) : ''} displayType={'text'} thousandSeparator={true} /></b>
-													{(dataToClose && dataToClose.totalVes) ? <Button className="btn-link" color="primary" onClick={() => { getDetails(dataToClose.date, 7, dataToClose.agency._id) }}>
+													{(dataToClose && dataToClose.totalVes) ? (
+													<Button outline color="primary" size="sm" className="ml-1 align-middle" type="button" onClick={() => { getDetails(dataToClose.date, 7, dataToClose.agency._id) }}>
 														Detalle
-													</Button> : ''}
+													</Button>
+												) : ''}
 												</Label>
 											</FormGroup>
 										</Col>
@@ -1875,9 +1877,11 @@ function PaymentMethodsPage() {
 											<FormGroup>
 												<Label for="bsValue">
 													<b>Dólar: $<NumberFormat value={dataToClose ? dataToClose.totalDollar.toFixed(2) : ''} displayType={'text'} thousandSeparator={true} /></b>
-													{(dataToClose && dataToClose.totalDollar) ? <Button className="btn-link" color="primary" onClick={() => { getDetails(dataToClose.date, 1, dataToClose.agency._id) }}>
+													{(dataToClose && dataToClose.totalDollar) ? (
+													<Button outline color="primary" size="sm" className="ml-1 align-middle" type="button" onClick={() => { getDetails(dataToClose.date, 1, dataToClose.agency._id) }}>
 														Detalle
-													</Button> : ''}
+													</Button>
+												) : ''}
 												</Label>
 											</FormGroup>
 										</Col>
@@ -1901,9 +1905,11 @@ function PaymentMethodsPage() {
 											<FormGroup>
 												<Label for="bsValue">
 													<b>Euros: <NumberFormat value={dataToClose ? dataToClose.totalEur.toFixed(2) : ''} displayType={'text'} thousandSeparator={true} /></b>
-													{(dataToClose && dataToClose.totalEur) ? <Button className="btn-link" color="primary" onClick={() => { getDetails(dataToClose.date, 2, dataToClose.agency._id) }}>
+													{(dataToClose && dataToClose.totalEur) ? (
+													<Button outline color="primary" size="sm" className="ml-1 align-middle" type="button" onClick={() => { getDetails(dataToClose.date, 2, dataToClose.agency._id) }}>
 														Detalle
-													</Button> : ''}
+													</Button>
+												) : ''}
 												</Label>
 											</FormGroup>
 										</Col>
@@ -1927,9 +1933,11 @@ function PaymentMethodsPage() {
 											<FormGroup>
 												<Label for="bsValue">
 													<b>Pesos: <NumberFormat value={dataToClose ? dataToClose.totalCop.toFixed(2) : ''} displayType={'text'} thousandSeparator={true} /></b>
-													{(dataToClose && dataToClose.totalCop) ? <Button className="btn-link" color="primary" onClick={() => { getDetails(dataToClose.date, 3, dataToClose.agency._id) }}>
+													{(dataToClose && dataToClose.totalCop) ? (
+													<Button outline color="primary" size="sm" className="ml-1 align-middle" type="button" onClick={() => { getDetails(dataToClose.date, 3, dataToClose.agency._id) }}>
 														Detalle
-													</Button> : ''}
+													</Button>
+												) : ''}
 												</Label>
 											</FormGroup>
 										</Col>
@@ -1955,7 +1963,7 @@ function PaymentMethodsPage() {
 												<Label>
 													<b>Descuentos por cupón: Bs <NumberFormat value={dataToClose && dataToClose.totalCouponDiscount != null ? dataToClose.totalCouponDiscount.toFixed(2) : '0.00'} displayType={'text'} thousandSeparator={true} /></b>
 													{(dataToClose && (dataToClose.totalCouponDiscount || 0) > 0) ? (
-														<Button className="btn-link" color="primary" onClick={() => { history.push('/historial-cupones' + (dataToClose.date ? '?date=' + moment(dataToClose.date).utc().format('YYYY-MM-DD') : '')); }}>
+														<Button outline color="primary" size="sm" className="ml-1 align-middle" type="button" onClick={() => { history.push('/historial-cupones' + (dataToClose.date ? '?date=' + moment(dataToClose.date).utc().format('YYYY-MM-DD') : '')); }}>
 															Detalle
 														</Button>
 													) : ''}

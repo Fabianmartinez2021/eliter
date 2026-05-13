@@ -202,6 +202,11 @@ function CreditPaymentPage() {
     });
   }, [listProducts, catalogFilterText, catalogType, catalogCombos]);
 
+  const catalogDollarRate = useMemo(() => {
+    if (!listCoin || !listCoin.length || listCoin[0].value == null) return 0;
+    return parseFloat(listCoin[0].value.toFixed(2));
+  }, [listCoin]);
+
   const closeCatalogModal = () => {
     setCatalogModalOpen(false);
     setCatalogFilterText('');

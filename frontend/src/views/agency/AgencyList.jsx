@@ -94,17 +94,19 @@ function AgencyListPage() {
 			name: '',
 			button: true,
 			cell: row => (
-			<Button
-				className="btn-link"
-				color="primary"
-				size="sm"
-				onClick={e => {
-				e.preventDefault();
-				history.push('/update-agency', { id: row.id });
-				}}
-			>
-				<i className="fas fa-pencil-alt"></i>
-			</Button>
+				<Button
+					outline
+					color="primary"
+					size="sm"
+					title="Editar sucursal"
+					aria-label="Editar sucursal"
+					onClick={e => {
+						e.preventDefault();
+						history.push('/update-agency', { id: row.id });
+					}}
+				>
+					<i className="fa fa-pencil" aria-hidden="true" />
+				</Button>
 			)
 		}
 		
