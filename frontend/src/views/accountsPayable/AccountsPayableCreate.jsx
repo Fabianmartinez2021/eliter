@@ -13,6 +13,7 @@ import NumberFormat from 'react-number-format';
 import { getCatalogUnitPriceBsUsd } from '../../helpers/catalogPriceDisplay';
 import { useDarkMode } from '../../helpers/darkModeContext';
 import "../../assets/css/darkMode.css";
+import '../../assets/css/table.css';
 
 function AccountsPayableCreatePage() {
 
@@ -380,20 +381,21 @@ function AccountsPayableCreatePage() {
                                                 className="mb-3"
                                             />
                                             <div style={{ maxHeight: '55vh', overflowY: 'auto' }}>
-                                                <Table size="sm" striped responsive className={darkMode ? 'dark-mode' : ''}>
+                                                <Table size="sm" striped responsive className={(darkMode ? 'dark-mode ' : '') + 'catalog-modal-table'}>
                                                     <thead>
                                                         <tr>
                                                             <th>Código</th>
                                                             <th>Producto</th>
-                                                            <th className="text-nowrap">Bs</th>
-                                                            <th className="text-nowrap">$</th>
+                                                            <th className="d-none d-md-table-cell text-nowrap">Bs</th>
+                                                            <th className="d-none d-md-table-cell text-nowrap">$</th>
+                                                            <th className="d-md-none">Precio</th>
                                                             <th style={{ width: 120 }} />
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {catalogRowsFiltered.length === 0 ? (
                                                             <tr>
-                                                                <td colSpan={5} className="text-center py-3">
+                                                                <td colSpan={6} className="text-center py-3">
                                                                     {listProducts && listProducts.length ? 'Sin coincidencias' : 'Cargando catálogo…'}
                                                                 </td>
                                                             </tr>
@@ -404,19 +406,31 @@ function AccountsPayableCreatePage() {
                                                                 <tr key={p._id || p.id || `${String(p.code)}-${idx}`}>
                                                                     <td className="text-nowrap">{p.code}</td>
                                                                     <td>{p.name}</td>
-                                                                    <td className="text-nowrap">
+                                                                    <td className="d-none d-md-table-cell text-nowrap">
                                                                         {bs != null ? (
                                                                             <NumberFormat value={bs.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'Bs '} />
                                                                         ) : (
                                                                             <span className="text-muted">—</span>
                                                                         )}
                                                                     </td>
-                                                                    <td className="text-nowrap">
+                                                                    <td className="d-none d-md-table-cell text-nowrap">
                                                                         {usd != null ? (
                                                                             <NumberFormat value={usd.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$ '} />
                                                                         ) : (
                                                                             <span className="text-muted">—</span>
                                                                         )}
+                                                                    </td>
+                                                                    <td className="d-md-none align-middle catalog-modal-price-stack">
+                                                                        <div>{usd != null ? (
+                                                                            <NumberFormat value={usd.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$ '} />
+                                                                        ) : (
+                                                                            <span className="text-muted">—</span>
+                                                                        )}</div>
+                                                                        <div>{bs != null ? (
+                                                                            <NumberFormat value={bs.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'Bs '} />
+                                                                        ) : (
+                                                                            <span className="text-muted">—</span>
+                                                                        )}</div>
                                                                     </td>
                                                                     <td>
                                                                         <Button color="primary" size="sm" type="button" onClick={() => selectProductFromCatalog(p)}>

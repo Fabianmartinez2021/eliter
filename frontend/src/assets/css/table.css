@@ -99,3 +99,10 @@
 .dark-mode .sumar-periodos-label {
     color: #e0e0e0;
 }
+
+/* Catálogo (modal): en móvil una sola columna precio — $ arriba, Bs abajo */
+.catalog-modal-table .catalog-modal-price-stack {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    white-space: nowrap;
+}

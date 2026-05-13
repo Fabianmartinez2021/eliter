@@ -1,5 +1,5 @@
 //export const apiUrl = 'http://200.6.157.80:4000';
-export const apiUrl = 'http://localhost:4000';
+export const apiUrl = 'http://190.9.40.111:4000';
 
 export const passphrase = 'app-development-22052020';
 //frase de contraseÃ±a para data de ventas offline
