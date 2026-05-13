@@ -1,0 +1,103 @@
+/* Burbuja flotante de meta alcanzada - arrastrable */
+
+.meta-bubble {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  max-width: 220px;
+  padding: 14px 18px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  z-index: 10000;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.meta-bubble:active {
+  cursor: grabbing;
+}
+
+.meta-bubble:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.meta-bubble__label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+}
+
+.meta-bubble__value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.meta-bubble__value.reached {
+  color: #28a745;
+}
+
+.meta-bubble__value.pending {
+  color: #ff9800;
+}
+
+.meta-bubble--loading {
+  padding: 18px 22px;
+}
+
+.meta-bubble--loading .meta-bubble__spinner {
+  margin-bottom: 8px;
+}
+
+.meta-bubble--loading .meta-bubble__text {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Dark mode */
+.dark-mode .meta-bubble,
+.meta-bubble.dark-mode {
+  background: rgba(40, 40, 40, 0.92);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark-mode .meta-bubble:hover,
+.meta-bubble.dark-mode:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .meta-bubble__label,
+.meta-bubble.dark-mode .meta-bubble__label {
+  color: #f0f0f0;
+}
+
+.dark-mode .meta-bubble--loading .meta-bubble__text,
+.meta-bubble.dark-mode.meta-bubble--loading .meta-bubble__text {
+  color: #adb5bd;
+}

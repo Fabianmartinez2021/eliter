@@ -1,0 +1,19 @@
+{
+  "connectionString": "mongodb://localhost/orquesta",
+  "secret": "app-development-22052020",
+  "factoryWebhookUrl": "http://135.148.164.220:80000/api/webhook/product-update",
+  "factoryAgencyWebhookUrl": "http://135.148.164.220:80000/api/webhook/agency-update",
+  "factoryNoteMarketWebhookUrl": "http://135.148.164.220:80000/api/webhook/note-market-update",
+  "factoryCoinWebhookUrl": "http://135.148.164.220:80000/api/webhook/coin-update",
+  "factoryMiscellaneousWebhookUrl": "http://135.148.164.220:80000/api/webhook/product-miscellaneous-update",
+  "factoryOrderMiscellaneousWebhookUrl": "http://135.148.164.220:80000/api/webhook/order-miscellaneous",
+  "factoryOrderMarketMiscellaneousWebhookUrl": "http://135.148.164.220:80000/api/webhook/order-market-miscellaneous-update",
+  "webhookSecret": "webhook-secret-fabrica-2025",
+  "smtp": {
+    "host": "mail.embutidosfattoria.com",
+    "port": 465,
+    "secure": true,
+    "from": "noreply@embutidosfattoria.com"
+  },
+  "frontendUrl": "https://sistema.embutidosfattoria.com" 
+}

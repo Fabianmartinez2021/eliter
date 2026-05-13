@@ -1,0 +1,97 @@
+.notification-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 380px;
+    pointer-events: none;
+}
+
+.notification-container > * {
+    pointer-events: auto;
+}
+
+.notification-toast-clickable {
+    cursor: pointer;
+}
+
+.notification-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 4px solid #17a2b8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: notificationSlideIn 0.3s ease-out;
+}
+
+@keyframes notificationSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notification-container.dark-mode .notification-toast {
+    background: #2d2d2d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.notification-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    display: block;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.notification-container.dark-mode .notification-title {
+    color: #eee;
+}
+
+.notification-message {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.notification-container.dark-mode .notification-message {
+    color: #aaa;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #999;
+    font-size: 0.9rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.notification-close:hover {
+    color: #333;
+}
+
+.notification-container.dark-mode .notification-close:hover {
+    color: #eee;
+}

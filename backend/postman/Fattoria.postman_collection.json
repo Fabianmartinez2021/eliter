@@ -1,0 +1,1194 @@
+{
+	"info": {
+		"_postman_id": "2a8db9c7-3c95-4db0-a12b-f313bc158c8b",
+		"name": "fattoria",
+		"description": "Api services FATTORIA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Carlos\",\r\n    \"lastName\": \"Arismendi\",\r\n    \"username\": \"admin\",\r\n    \"hash\": \"123456\",\r\n    \"phone\": \"123456\",\r\n    \"role\": 1,\r\n    \"password\": \"123456\",\r\n    \"status\":1,\r\n    \"email\":\"admin@admin.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/users/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"adminDev\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/users/authenticate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"users",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener usuarios",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener usuarios por agencia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agency\":\"5f206c4681d4362f44b12a77\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/users/list-users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"users",
+								"list-users"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Seed",
+			"item": [
+				{
+					"name": "seed",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/seed/seed-db/Sn4ZUVOJI6BCBcf4Xe08Qvqei",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"seed",
+								"seed-db",
+								"Sn4ZUVOJI6BCBcf4Xe08Qvqei"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "seed user admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/seed/seed-db-user/Sn4ZUVOJI6BCBcf4Xe08Qvqei4d3in",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"seed",
+								"seed-db-user",
+								"Sn4ZUVOJI6BCBcf4Xe08Qvqei4d3in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clean DB",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/seed/clean-db/Sn4ZUVOJI6BCBcf4Xe08Qvqei4d3in58785411857xaw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"seed",
+								"clean-db",
+								"Sn4ZUVOJI6BCBcf4Xe08Qvqei4d3in58785411857xaw"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Ventas",
+			"item": [
+				{
+					"name": "data sale",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjA4ODA0ODk4MjkwYTNmOGM0NmI1YTAiLCJpYXQiOjE1OTQ0OTU3OTd9.D0JEbQn04eyw5nzdO19ayfAoCIVx0pR-s_s41DeD378",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/sales/get-sales-data/5f08804898290a3f8c46b59f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"get-sales-data",
+								"5f08804898290a3f8c46b59f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ventas del dia",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": {\"agency\": \"5f206c4681d4362f44b12a77\", \"id\": \"5f206c4681d4362f44b12a78\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/sales/table-sale-daily",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"table-sale-daily"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ventas Generales",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"filters\": {\"ticket\": \"\", \"names\": \"\", \"reference\": \"\", \"startDate\": \"2020-09-02\", \"endDate\": \"2020-09-02\"},\r\n    \"user\": {\"agency\": \"5f206c4681d4362f44b12a77\", \"id\": \"5f206c4681d4362f44b12a78\"},\r\n    \"pageSize\":10,\r\n    \"pageIndex\":1,\r\n    \"sortBy\": { \"id\":\"createdDate\", \"desc\":true  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/sales/sales-table",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"sales-table"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Reportes",
+			"item": [
+				{
+					"name": "reporte de ventas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-09-07\",\"endDate\":\"2020-09-07\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/report-sales",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"report-sales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reporte de inventarios",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": true,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-09-11\",\"endDate\":\"2020-09-11\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/report-inventories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"report-inventories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporte de Ajustes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDQ1MDIzMzN9.yVGiQX1_wtCzYH4WDDmjrcsO4So0z5wG6zjRCZKEuzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-08-13\",\"endDate\":\"2020-10-13\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/table-history-adjustment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"table-history-adjustment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Salidas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": true,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-09-01\",\"endDate\":\"2020-09-04\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/departure/table-departure",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"departure",
+								"table-departure"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporte métodos de pago",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDM5ODUwMzV9.y_4nmZ7t3LhuWevkirsEd3bQdpAaUOnf8TgSHBb9dhI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": true,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-09-01\",\"endDate\":\"2020-09-04\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/sales/report-payment-methods",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"report-payment-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle venta moneda",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTYxMjY2OTF9.srBdkm3xL6CiCSG8qFWO87Ov2Yluz7vVnOTm2dT99Ds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2020-08-13T20:43:27.135Z\",\r\n    \"coin\": 5\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/sales/detail-payment-methods",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"detail-payment-methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ventas-Lista",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTczMzIxMjZ9.Snu2ds3GR3_zuV-UGY1oqya69dbwe3YijLCTCXIRmUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/sales/table-sale",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"sales",
+								"table-sale"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle Mermas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTYxMjY2OTF9.srBdkm3xL6CiCSG8qFWO87Ov2Yluz7vVnOTm2dT99Ds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2020-08-20T20:43:27.135Z\",\r\n    \"product\":\"5f206c7281d4362f44b12a7c\",\r\n    \"agency\":\"5f206c4681d4362f44b12a77\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/detail-decrease",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"detail-decrease"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle Salidas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTYxMjY2OTF9.srBdkm3xL6CiCSG8qFWO87Ov2Yluz7vVnOTm2dT99Ds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2020-08-20T20:43:27.135Z\",\r\n    \"product\":\"5f206c7281d4362f44b12a7c\",\r\n    \"agency\":\"5f206c4681d4362f44b12a77\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/detail-departures",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"detail-departures"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle Recortes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTYxMjY2OTF9.srBdkm3xL6CiCSG8qFWO87Ov2Yluz7vVnOTm2dT99Ds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2020-08-26T20:43:27.135Z\",\r\n    \"code\":32,\r\n    \"agency\":\"5f206c4681d4362f44b12a77\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/detail-cut",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"detail-cut"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inventario Actual",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":3,\"id\":\"5f206c4681d4362f44b12a78\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/table-inventory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"table-inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporte Caja",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDM5ODUwMzV9.y_4nmZ7t3LhuWevkirsEd3bQdpAaUOnf8TgSHBb9dhI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-10-28\",\"endDate\":\"2020-10-28\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/box/box-report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"box",
+								"box-report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reporte de balances",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDQ1MDIzMzN9.yVGiQX1_wtCzYH4WDDmjrcsO4So0z5wG6zjRCZKEuzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-11-04\",\"endDate\":\"2020-11-04\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/inventory/report-balance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"inventory",
+								"report-balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reporte de cierres de caja",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDQ1MDIzMzN9.yVGiQX1_wtCzYH4WDDmjrcsO4So0z5wG6zjRCZKEuzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-11-09\",\"endDate\":\"2020-11-09\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/box/box-close-report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"box",
+								"box-close-report"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Cron",
+			"item": [
+				{
+					"name": "Cron de inventario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/cron/cron-inventory/UdWTcFo65if3EGDzwOFG",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"cron",
+								"cron-inventory",
+								"UdWTcFo65if3EGDzwOFG"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reporte historial cron",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjIwNmM0NjgxZDQzNjJmNDRiMTJhNzgiLCJpYXQiOjE1OTgyNzkwMjR9.DIMf3tejE0cRk_kJAsL9iLHdEBuF3nhGfeA0YZhI6yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-09-14\",\"endDate\":\"2020-09-16\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/cron/cron-history",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"cron",
+								"cron-history"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "Historial de productos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjMwYWJlZjcyNWVlYzRjYTg0ODVhYjgiLCJpYXQiOjE2MDEwNzIwODd9.Ab49fndWEw87FonVTTTUet-X51P7RJKQ0Zl0xSCpE00",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f19a7b1ad6afa329416b7e4\",\"role\":1,\"id\":\"5f30abef725eec4ca8485ab8\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{\"id\":\"createdDate\",\"desc\":true},\r\n    \"filters\":{\"code\":\"\",\"startDate\":\"2020-08-12\",\"endDate\":\"\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/product/table-product-history",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"product",
+								"table-product-history"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Ofertas",
+			"item": [
+				{
+					"name": "Crear oferta",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjMwYWJlZjcyNWVlYzRjYTg0ODVhYjgiLCJpYXQiOjE2MDEwNzIwODd9.Ab49fndWEw87FonVTTTUet-X51P7RJKQ0Zl0xSCpE00",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agency\": \"5f19a7b1ad6afa329416b7e4\",\r\n    \"comment\": \"test\",\r\n    \"price\": 1450000,\r\n    \"product\": \"5f19b0c1ad6afa329416b7ec\",\r\n    \"regularPrice\": 1080000,\r\n    \"user\": \"5f30abef725eec4ca8485ab8\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/offer/create-offer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"offer",
+								"create-offer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tabla Ofertas",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjMwYWJlZjcyNWVlYzRjYTg0ODVhYjgiLCJpYXQiOjE2MDEwNzIwODd9.Ab49fndWEw87FonVTTTUet-X51P7RJKQ0Zl0xSCpE00",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agency\": \"5f19a7b1ad6afa329416b7e4\",\r\n    \"comment\": \"test\",\r\n    \"price\": 1450000,\r\n    \"product\": \"5f19b0c1ad6afa329416b7ec\",\r\n    \"regularPrice\": 1080000,\r\n    \"user\": \"5f30abef725eec4ca8485ab8\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/offer/table-offer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"offer",
+								"table-offer"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Caja",
+			"item": [
+				{
+					"name": "Reporte Caja Cierre",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDM5ODUwMzV9.y_4nmZ7t3LhuWevkirsEd3bQdpAaUOnf8TgSHBb9dhI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"agency\":\"\",\"startDate\":\"2020-10-28\",\"endDate\":\"2020-10-28\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/box/box-close-report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"box",
+								"box-close-report"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Listado de clientes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDQ1MDIzMzN9.yVGiQX1_wtCzYH4WDDmjrcsO4So0z5wG6zjRCZKEuzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\":{\"agency\":\"5f206c4681d4362f44b12a77\",\"role\":1,\"id\":\"5f206c4681d4362f44b12a78\"},\r\n    \"pageIndex\":1,\r\n    \"pageSize\":10,\r\n    \"sortBy\":{},\r\n    \"isExcel\": false,\r\n    \"filters\":{\"startDate\":\"2020-11-23\",\"endDate\":\"2020-11-23\"}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/client/table-clients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"client",
+								"table-clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "autocompletado de clientes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZjUxMGJlOTRlYzc5ZTBmYmQ1MTFlODMiLCJpYXQiOjE2MDQ1MDIzMzN9.yVGiQX1_wtCzYH4WDDmjrcsO4So0z5wG6zjRCZKEuzA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\":156\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/client/search-document",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"client",
+								"search-document"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

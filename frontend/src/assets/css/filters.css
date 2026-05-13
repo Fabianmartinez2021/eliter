@@ -1,0 +1,26 @@
+@media (max-width: 576px) {
+    .filter {
+        padding: 1.5rem;
+    }
+}
+.filter {
+    padding: 1rem;
+    border: 1px solid rgb(222, 226, 230);
+    border-radius: 5px;
+}
+.filter.filter-collapsed {
+    padding: 0.5rem 0;
+    border: none;
+    background: transparent;
+}
+.filter.filter-collapsed a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.filter.filter-collapsed a:hover {
+    color: #475569;
+}
+.support-history-filter a {
+    color: #64748b;
+}

@@ -1,0 +1,259 @@
+.dark-mode {
+  background-color: #111111;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+.dark-mode .text {
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s
+}
+.dark-mode .child-item{
+  background-color: #444444;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+.dark-mode .dataTables_wrapper{
+  background-color: #111111;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+.dark-mode .form-control {
+  background-color: #444444 !important;
+  color: #ffffff !important;
+  border: 1px solid #666666 !important;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dark-mode .icon {
+color: rgb(255,107,0)
+}
+/* .dark-mode h3 {
+color: rgb(255,107,0)
+} */
+.dark-mode .busqueda{
+color: rgb(255,107,0)
+}
+.dark-mode.boton-dark{
+background-color: rgb(255,107,0)
+}
+
+/* .boton{
+background-color: rgb(220, 53, 69);
+color: white;
+} */
+/* Placeholder en modo oscuro */
+.dark-mode .form-control::placeholder {
+  color: #bbbbbb !important;
+}
+
+/* Cuando el input está en focus */
+.dark-mode .form-control:focus {
+  background-color: #555555 !important;
+  border-color: #888888 !important;
+  color: #ffffff !important;
+}
+
+/* Para inputs con error */
+.dark-mode .form-control.is-invalid {
+  background-color: #662222 !important;
+  border-color: #cc4444 !important;
+  color: #ffffff !important;
+}
+
+/* Mensaje de error */
+.dark-mode .invalid-feedback {
+  color: #ff5555 !important;
+}
+
+.dark-mode {
+  background-color: #111111;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Cabeceras de la tabla en modo oscuro */
+.dark-mode .dataTables_wrapper .dataTable thead th {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border-color: #666666 !important;
+}
+
+/* Celdas de la tabla en modo oscuro */
+.dark-mode .dataTables_wrapper .dataTable tbody tr td {
+  background-color: #444444 !important;
+  color: #ffffff !important;
+  border-color: #666666 !important;
+}
+
+/* Paginación en modo oscuro */
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button {
+  background-color: #444444 !important;
+  color: #ffffff !important;
+  border: 1px solid #666666 !important;
+}
+
+/* Filas de la tabla al pasar el ratón */
+.dark-mode .dataTables_wrapper .dataTable tbody tr:hover {
+  background-color: #555555 !important;
+}
+
+.dark-mode .form-control-plaintext{
+  color:#ffffff !important
+}
+/* Estilos para el componente en modo oscuro */
+.dark-mode .rdt {
+  /* background-color: #333333 !important; Fondo oscuro para el contenedor de la fecha */
+  color: #ffffff !important; /* Texto blanco */
+}
+
+.dark-mode .rdtPicker {
+  background-color: #444444 !important; /* Fondo oscuro para el calendario */
+  border-color: #666666 !important; /* Borde del calendario */
+  color: #ffffff !important; /* Texto blanco en el selector de hora */
+
+}
+
+.dark-mode .rdtTime {
+  background-color: #444444 !important; /* Fondo oscuro para el selector de hora */
+  color: #ffffff !important; /* Texto blanco en el selector de hora */
+}
+
+.dark-mode .rdtBtn {
+  background-color: #555555 !important; /* Botones con fondo oscuro */
+  color: #ffffff !important; /* Texto blanco en los botones */
+}
+
+.dark-mode .rdtNext,
+.dark-mode .rdtPrev {
+  color: #ffffff !important; /* Flechas de navegación en el calendario en color blanco */
+}
+
+/* Asegurando que el placeholder también sea visible */
+.dark-mode .rdt input::placeholder {
+  color: #ffffff !important; /* Placeholder en color gris claro */
+}
+
+/* Estilo global en modo oscuro para el ListGroup */
+.dark-mode .list-group {
+  background-color: #333333 !important; /* Fondo oscuro */
+}
+
+/* Estilo para los elementos de la lista */
+.dark-mode .list-group-item {
+  background-color: #444444 !important; /* Fondo de cada item */
+  color: #ffffff !important; /* Texto blanco */
+  border-color: #666666 !important; /* Borde de los items */
+}
+
+/* Forzar el color blanco en los encabezados de los items */
+.dark-mode .list-group-item-heading,
+.dark-mode .list-group-item-text,
+.dark-mode .list-group-item-text b {
+  color: #ffffff !important; /* Texto blanco para todos los encabezados y textos */
+}
+
+/* Asegurar que el texto dentro de los b tags también sea blanco */
+.dark-mode .list-group-item-text b {
+  color: #ffffff !important; /* Blanco para texto en negritas */
+}
+/* Estilo para el modal en dark mode */
+.dark-mode .modal-content {
+  background-color: #333333 !important; /* Fondo oscuro del modal */
+  color: white !important; /* Texto blanco en el modal */
+}
+
+/* Modal header */
+.dark-mode .modal-header {
+  background-color: #444444 !important; /* Fondo oscuro para la cabecera */
+  color: white !important; /* Texto blanco en la cabecera */
+}
+
+.dark-mode .modal-header .close {
+  color: white !important; /* X de cierre en blanco */
+}
+
+/* Modal body */
+.dark-mode .modal-body {
+  background-color: #333333 !important; /* Fondo oscuro para el cuerpo del modal */
+  color: white !important; /* Texto blanco en el cuerpo */
+}
+
+/* Modal footer */
+.dark-mode .modal-footer {
+  background-color: #444444 !important; /* Fondo oscuro para el pie del modal */
+  color: white !important; /* Texto blanco en el pie */
+}
+
+/* Estilo para los botones dentro del modal */
+.dark-mode .modal-footer .btn {
+  color: #fff !important; /* Texto blanco en botones */
+  border: 1px solid #666666 !important; /* Borde más claro para los botones */
+}
+
+/* Estilo para los botones secundarios */
+.dark-mode .modal-footer .btn-secondary {
+  background-color: #555555 !important; /* Fondo oscuro para el botón secundario */
+  border-color: #666666 !important;
+}
+
+/* Estilos para la tabla en dark mode */
+.dark-mode {
+  background-color: #333333 !important; /* Fondo oscuro para la tabla */
+  color: white !important; /* Texto blanco en la tabla */
+}
+
+.dark-mode thead {
+  background-color: #444444 !important; /* Fondo oscuro para el encabezado */
+  color: white !important; /* Texto blanco en el encabezado */
+}
+
+.dark-mode th {
+  color: white !important; /* Texto blanco en los encabezados de columna */
+}
+
+.dark-mode td {
+  color: white !important; /* Texto blanco en las celdas de la tabla */
+}
+
+.dark-mode .table-striped tbody tr:nth-child(odd) {
+  background-color: #555555 !important; /* Fondo más oscuro para filas impares */
+}
+
+.dark-mode .table-striped tbody tr:nth-child(even) {
+  background-color: #444444 !important; /* Fondo oscuro para filas pares */
+}
+
+.dark-mode .table-striped tbody tr:hover {
+  background-color: #666666 !important; /* Fondo al pasar el mouse sobre una fila */
+}
+
+/* Estilo para los textos dentro de los contenedores */
+.dark-mode .text-white {
+  color: white !important;
+}
+
+/* Loaders en modo oscuro */
+.dark-mode .loading-table::before,
+.dark-mode .loading-custom::before {
+  border-color: rgba(255, 154, 92, 0.18);
+  border-top-color: #ff9a5c;
+  border-right-color: rgba(255, 154, 92, 0.5);
+  box-shadow: 0 0 26px rgba(255, 107, 0, 0.22);
+}
+
+.dark-mode .loading-table::after,
+.dark-mode .loading-custom::after {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 154, 92, 0.42);
+}
+
+.dark-mode .spinner-border {
+  border-color: rgba(255, 154, 92, 0.16) !important;
+  border-top-color: #ff9a5c !important;
+  border-right-color: rgba(255, 154, 92, 0.45) !important;
+  border-bottom-color: rgba(255, 154, 92, 0.08) !important;
+}
+
+.dark-mode .spinner-grow {
+  background-color: #ff9a5c !important;
+}

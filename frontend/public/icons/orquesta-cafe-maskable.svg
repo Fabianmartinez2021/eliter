@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Orquesta Cafe">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <g transform="translate(32 36) scale(0.875)">
+    <g fill="none" stroke="#3d2914" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M228 108c-8-18 8-36 0-54s-8-36 0-52"/>
+      <path d="M256 118c0-24 0-48 0-72 0-16 0-32 0-48"/>
+      <path d="M284 108c8-18-8-36 0-54s8-36 0-52"/>
+      <path d="M322 218c52 4 88 40 88 92 0 48-36 84-84 88"/>
+      <path d="M190 200v132c0 44 36 80 80 80h12c44 0 80-36 80-80V200"/>
+      <ellipse cx="256" cy="200" rx="86" ry="26"/>
+      <ellipse cx="256" cy="208" rx="64" ry="18" fill="#2a1d14" stroke="none"/>
+      <ellipse cx="256" cy="372" rx="118" ry="28"/>
+      <path d="M156 372q100 26 200 0"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,94 @@
+.dataTables_wrapper .rdt_Table{
+    /* font-size: 14px; */
+    font-family: "Open Sans", sans-serif;
+    /* background-color: red; */
+
+}
+.dataTables_wrapper .rdt_TableCol_Sortable{
+    font-size: 14px;
+    font-weight: bold;
+    /* background-color: red; */
+
+}
+.dataTables_wrapper .rdt_ExpanderRow{
+    font-size: 14px;
+}
+.dataTables_wrapper .gnahTY{
+    display: flex;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+/* Badge Cupón: solo contorno verde, sin relleno */
+.badge-cupon-outline {
+    background: transparent !important;
+    color: #28a745 !important;
+    border: 1px solid #28a745;
+}
+
+/* Botones de exportar en Formas de pago */
+.btn-export-formas-pago {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+.btn-export-formas-pago:not(:disabled):hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+.btn-export-formas-pago:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+/* Sumar periodos – Formas de pago */
+.sumar-periodos-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    transition: background 0.2s, border-color 0.2s;
+}
+.sumar-periodos-checkbox:hover {
+    background: #f1f3f5;
+    border-color: #ced4da;
+}
+.sumar-periodos-input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: #e14e4e;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.sumar-periodos-label {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.01em;
+}
+.dark-mode .sumar-periodos-checkbox {
+    background: #3a3a3a;
+    border-color: #555;
+}
+.dark-mode .sumar-periodos-checkbox:hover {
+    background: #444;
+    border-color: #666;
+}
+.dark-mode .sumar-periodos-label {
+    color: #e0e0e0;
+}

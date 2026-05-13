@@ -1,0 +1,5 @@
+export const currencyDollarConstants = {
+    DOLLAR_REQUEST: 'DOLLAR_REQUEST',
+    DOLLAR_SUCCESS: 'DOLLAR_SUCCESS',
+    DOLLAR_FAILURE: 'DOLLAR_FAILURE' 
+}

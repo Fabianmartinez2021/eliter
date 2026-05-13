@@ -1,0 +1,105 @@
+/**
+ * Responsive global - Estándares profesionales
+ * Breakpoints: 576px, 768px, 992px, 1200px (Bootstrap)
+ */
+
+/* --- Variables y base --- */
+html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+html,
+body {
+    -webkit-overflow-scrolling: touch;
+}
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* --- Wrapper principal y página --- */
+#wrapper {
+    display: flex;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+#page-content-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* --- Safe area para dispositivos con notch --- */
+@supports (padding: max(0px)) {
+    .headerAdmin,
+    .navbar {
+        padding-left: max(0.5rem, env(safe-area-inset-left));
+    }
+}
+@media (max-width: 767px) {
+    #page-content-wrapper {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+}
+
+/* --- Áreas con scroll --- */
+.scroll-area,
+.custom-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+.scroll-area::-webkit-scrollbar,
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.scroll-area::-webkit-scrollbar-track,
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scroll-area::-webkit-scrollbar-thumb,
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
+}
+
+/* --- Touch targets accesibles en móvil --- */
+@media (max-width: 767px) {
+    .navbar .nav-link,
+    .navbar .dropdown-toggle,
+    .notification-bell-wrapper {
+        padding: 0.5rem !important;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* --- Formularios responsive --- */
+@media (max-width: 575px) {
+    .form-control,
+    .form-control-sm,
+    input,
+    select,
+    textarea {
+        font-size: 16px !important; /* Evita zoom en iOS al enfocar */
+    }
+}
+
+/* --- Modales en móvil --- */
+@media (max-width: 575px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    .modal-content {
+        border-radius: 12px;
+    }
+}

@@ -1,0 +1,110 @@
+/**
+ * Estilos responsive para SupportDetailPage - Chat tipo app nativa
+ */
+
+/* --- Móvil: chat full-screen como app nativa --- */
+@media (max-width: 991px) {
+    /* Container sin padding lateral para chat edge-to-edge */
+    .support-detail-page .support-detail-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Card del chat sin bordes ni sombra en móvil - ocupa todo el ancho */
+    .support-chat-card-mobile {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        max-height: none !important;
+        flex: 1 !important;
+        min-height: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    /* Espacio para que el input y la barra de acciones no se solapen */
+    .support-detail-page .support-detail-container {
+        padding-bottom: 95px !important;
+    }
+
+    /* Barra inferior fija tipo app nativa */
+    .support-bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+        z-index: 1060;
+        padding: 10px 12px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+
+    .support-bottom-bar .support-bottom-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        margin-top: 10px;
+    }
+
+    .support-bottom-bar .support-bottom-btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 10px 8px;
+        min-height: 56px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #e74c3c 0%, #e67e22 100%);
+        color: #fff !important;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .support-bottom-bar .support-bottom-btn:active {
+        transform: scale(0.96);
+    }
+
+    .support-bottom-bar .support-bottom-btn.outline {
+        background: transparent !important;
+        color: #6b7280 !important;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .support-bottom-bar .support-bottom-btn.danger-outline {
+        background: transparent !important;
+        color: #dc3545 !important;
+        border: 1px solid rgba(220, 53, 69, 0.5);
+    }
+
+    .support-bottom-bar .support-bottom-btn i {
+        font-size: 1.1rem;
+    }
+
+    /* Área de mensajes con margen inferior para scroll cómodo */
+    .support-chat-messages-mobile {
+        padding-bottom: 20px !important;
+    }
+}
+
+/* Modo oscuro en barra inferior */
+.dark-mode .support-bottom-bar {
+    background: #1e1e1e;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .support-bottom-bar .support-bottom-actions {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .support-bottom-bar .support-bottom-btn.outline {
+    color: #d1d5db !important;
+    border-color: rgba(255, 255, 255, 0.2);
+}

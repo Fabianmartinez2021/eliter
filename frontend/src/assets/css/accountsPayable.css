@@ -1,0 +1,680 @@
+/* Cuentas por pagar — layout y refuerzo visual */
+
+/* Ancho fluido: usa todo el espacio útil del content area (sin tope fijo) */
+.ap-page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.ap-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 1rem;
+}
+
+.ap-title {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #2c2c2c;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.ap-title-sub {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.ap-register {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ap-register-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.ap-summary {
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    padding: 0.65rem 1rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff9f5 0%, #fff 100%);
+    border: 1px solid rgba(224, 122, 58, 0.22);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.ap-summary-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.ap-summary-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c45d1a;
+    letter-spacing: 0.02em;
+}
+
+.ap-filter-wrap {
+    margin-bottom: 1.25rem;
+}
+
+.ap-filter-wrap .filter {
+    border-radius: 10px;
+    border-color: #e9ecef;
+    background: #fafbfc;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.ap-filter-wrap .filter a {
+    font-weight: 600;
+    color: #e07a3a;
+    text-decoration: none;
+}
+
+.ap-filter-wrap .filter a:hover {
+    color: #c45d1a;
+    text-decoration: underline;
+}
+
+.ap-table-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    padding: 0;
+}
+
+.ap-table-card .rdt_Table {
+    border-radius: 12px;
+}
+
+.ap-badge-estado {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.4rem 0.75rem !important;
+}
+
+.ap-btn-accion {
+    font-weight: 600;
+    font-size: 0.8rem;
+    border-radius: 8px !important;
+    padding: 0.35rem 0.65rem !important;
+    white-space: nowrap;
+}
+
+/* Modo oscuro */
+.dark-mode .ap-title {
+    color: #f1f3f5;
+}
+
+.dark-mode .ap-title-sub {
+    color: #adb5bd;
+}
+
+.dark-mode .ap-register-label {
+    color: #dee2e6;
+}
+
+.dark-mode .ap-summary {
+    background: linear-gradient(135deg, #2d2a28 0%, #1e1c1b 100%);
+    border-color: rgba(224, 122, 58, 0.35);
+}
+
+.dark-mode .ap-summary-label {
+    color: #adb5bd;
+}
+
+.dark-mode .ap-summary-value {
+    color: #ffb366;
+}
+
+.dark-mode .ap-filter-wrap .filter {
+    background: #252525;
+    border-color: #3d3d3d;
+}
+
+.dark-mode .ap-table-card {
+    background: #1e1e1e;
+    border-color: #333;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.dark-mode .ap-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Modal registrar / editar pago */
+.ap-pay-modal-content {
+    border-radius: 14px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ap-pay-modal-header {
+    background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.1rem 1.5rem;
+}
+
+.ap-pay-modal-header .modal-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: #212529;
+}
+
+.ap-pay-modal-body {
+    padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.ap-pay-modal-alert {
+    background: #fff8e6;
+    border: 1px solid #ffe0a3;
+    border-radius: 10px;
+    padding: 0.7rem 0.95rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: #5c4a21;
+}
+
+.ap-pay-modal-alert strong {
+    font-weight: 700;
+}
+
+.ap-pay-summary {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.35rem;
+}
+
+.ap-pay-summary__title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.85rem;
+    color: #212529;
+    letter-spacing: -0.01em;
+}
+
+.ap-pay-summary__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.ap-pay-estado {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    align-self: center;
+}
+
+.ap-pay-estado--ok {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.ap-pay-estado--partial {
+    background: #ffe8d4;
+    color: #b35900;
+    border: 1px solid #ffc999;
+}
+
+.ap-pay-estado--pending {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1bfc4;
+}
+
+.ap-pay-summary__amounts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.ap-pay-summary__chip {
+    flex: 1;
+    min-width: 120px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+}
+
+.ap-pay-summary__chip strong {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.ap-pay-summary__chip span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.ap-pay-summary__chip--pending span {
+    color: #c45d1a;
+}
+
+.ap-pay-field {
+    margin-bottom: 1.15rem;
+}
+
+.ap-pay-field > label,
+.ap-pay-field label.ap-pay-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #343a40;
+    margin-bottom: 0.4rem;
+}
+
+.ap-pay-field .form-control,
+.ap-pay-field select.form-control {
+    border-radius: 8px;
+    border-color: #ced4da;
+    min-height: calc(1.5em + 0.75rem + 2px);
+}
+
+.ap-pay-field textarea.form-control {
+    min-height: 72px;
+    resize: vertical;
+}
+
+.ap-pay-field-hint {
+    font-size: 0.78rem;
+    color: #6c757d;
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+}
+
+.ap-pay-preview {
+    background: #e7f5ff;
+    border: 1px solid #b8daff;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.ap-pay-preview-muted {
+    color: #495057;
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+}
+
+.ap-pay-rates-block {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.15rem;
+}
+
+.ap-pay-rates-block > strong {
+    font-size: 0.8rem;
+    color: #495057;
+}
+
+.ap-pay-modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+    background: #fafbfc;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.ap-pay-modal-footer .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    min-width: 7rem;
+}
+
+.ap-pay-modal-footer .btn-success {
+    background: #198754;
+    border-color: #198754;
+}
+
+.ap-pay-modal-footer .btn-success:hover {
+    background: #157347;
+    border-color: #146c43;
+}
+
+.ap-pay-footnote {
+    font-size: 0.78rem;
+    color: #868e96;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Modal — modo oscuro */
+.dark-mode .ap-pay-modal-content {
+    background: #2b2b2b;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+}
+
+.dark-mode .ap-pay-modal-header {
+    background: linear-gradient(180deg, #333 0%, #2b2b2b 100%);
+    border-bottom-color: #404040;
+}
+
+.dark-mode .ap-pay-modal-header .modal-title {
+    color: #f8f9fa;
+}
+
+.dark-mode .ap-pay-modal-alert {
+    background: #3d3420;
+    border-color: #5c4d2a;
+    color: #f0e6c8;
+}
+
+.dark-mode .ap-pay-summary {
+    background: #252525;
+    border-color: #404040;
+}
+
+.dark-mode .ap-pay-summary__title {
+    color: #f1f3f5;
+}
+
+.dark-mode .ap-pay-summary__chip {
+    background: #1e1e1e;
+    border-color: #444;
+}
+
+.dark-mode .ap-pay-summary__chip span {
+    color: #e9ecef;
+}
+
+.dark-mode .ap-pay-summary__chip--pending span {
+    color: #ffb366;
+}
+
+.dark-mode .ap-pay-estado--ok {
+    background: #1e462e;
+    color: #a3e4b0;
+    border-color: #2d6a44;
+}
+
+.dark-mode .ap-pay-estado--partial {
+    background: #4a3318;
+    color: #ffc999;
+    border-color: #6b471f;
+}
+
+.dark-mode .ap-pay-estado--pending {
+    background: #4a1f24;
+    color: #f5b8c0;
+    border-color: #6b2a32;
+}
+
+.dark-mode .ap-pay-field > label,
+.dark-mode .ap-pay-field label.ap-pay-label {
+    color: #dee2e6;
+}
+
+.dark-mode .ap-pay-field .form-control,
+.dark-mode .ap-pay-field select.form-control {
+    background: #1e1e1e;
+    border-color: #555;
+    color: #f8f9fa;
+}
+
+.dark-mode .ap-pay-preview {
+    background: #1a2e42;
+    border-color: #2a4a66;
+    color: #cce5ff;
+}
+
+.dark-mode .ap-pay-preview-muted {
+    color: #adb5bd;
+}
+
+.dark-mode .ap-pay-rates-block {
+    background: #252525;
+    border-color: #404040;
+}
+
+.dark-mode .ap-pay-rates-block > strong {
+    color: #ced4da;
+}
+
+.dark-mode .ap-pay-modal-footer {
+    background: #252525;
+    border-top-color: #404040;
+}
+
+.dark-mode .ap-pay-footnote {
+    color: #adb5bd;
+}
+
+/* Fila expandida — detalle */
+.ap-expand-detail {
+    padding: 0.5rem 0.75rem 1rem;
+    max-width: 100%;
+}
+
+.ap-expand-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ap-expand-card:last-child {
+    margin-bottom: 0;
+}
+
+.ap-expand-card__head {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6c757d;
+    background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.55rem 1rem;
+}
+
+.ap-expand-card--rates .ap-expand-card__head {
+    background: linear-gradient(180deg, #fff8f0 0%, #fff3e6 100%);
+    color: #8a4a16;
+    border-bottom-color: #ffd8b8;
+}
+
+.ap-expand-table {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+.ap-expand-table thead th {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #868e96;
+    border-bottom-width: 2px;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+}
+
+.ap-expand-table tbody td {
+    padding: 0.65rem 1rem;
+    vertical-align: middle;
+    border-color: #f1f3f5;
+}
+
+.ap-expand-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ap-expand-table .text-end,
+.ap-expand-table td:last-child:not(:first-child) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-expand-note {
+    padding: 0.65rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #495057;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #dee2e6;
+}
+
+.ap-expand-note strong {
+    color: #343a40;
+}
+
+.ap-expand-rates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem 0.9rem;
+}
+
+.ap-expand-rate-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: #495057;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+}
+
+.ap-expand-rate-chip strong {
+    font-weight: 700;
+    color: #212529;
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-expand-method {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.55rem;
+    border-radius: 6px;
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #e9ecef;
+}
+
+.ap-expand-legacy {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    padding: 0 1rem 1rem;
+    color: #495057;
+}
+
+.ap-expand-legacy > div {
+    margin-bottom: 0.35rem;
+}
+
+.dark-mode .ap-expand-detail {
+    background: transparent;
+}
+
+.dark-mode .ap-expand-card {
+    background: #252525;
+    border-color: #3d3d3d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.dark-mode .ap-expand-card__head {
+    background: linear-gradient(180deg, #2f2f2f 0%, #282828 100%);
+    color: #adb5bd;
+    border-bottom-color: #404040;
+}
+
+.dark-mode .ap-expand-card--rates .ap-expand-card__head {
+    background: linear-gradient(180deg, #3d2e20 0%, #2d2418 100%);
+    color: #ffc999;
+    border-bottom-color: #5c4d2a;
+}
+
+.dark-mode .ap-expand-table thead th {
+    color: #adb5bd;
+    border-color: #404040;
+}
+
+.dark-mode .ap-expand-table tbody td {
+    border-color: #333;
+    color: #e9ecef;
+}
+
+.dark-mode .ap-expand-note {
+    background: #2a2a2a;
+    border-left-color: #555;
+    color: #ced4da;
+}
+
+.dark-mode .ap-expand-note strong {
+    color: #f8f9fa;
+}
+
+.dark-mode .ap-expand-rate-chip {
+    background: #1e1e1e;
+    border-color: #444;
+    color: #ced4da;
+}
+
+.dark-mode .ap-expand-rate-chip strong {
+    color: #fff;
+}
+
+.dark-mode .ap-expand-legacy {
+    color: #ced4da;
+}
+
+.dark-mode .ap-expand-method {
+    background: #333;
+    border-color: #555;
+    color: #e9ecef;
+}
